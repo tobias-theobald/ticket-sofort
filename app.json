@@ -10,7 +10,7 @@
   "jsEngine": "hermes",
   "orientation": "portrait",
   "icon": "./assets/images/icon.png",
-  "scheme": "svvticket",
+  "scheme": "ticketsofort",
   "userInterfaceStyle": "automatic",
   "splash": {
     "image": "./assets/images/splash.png",
