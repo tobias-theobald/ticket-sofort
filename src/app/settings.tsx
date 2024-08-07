@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { Button, Card, HelperText, IconButton, List, Text, TextInput } from 'react-native-paper';
@@ -7,7 +8,7 @@ import { useSettings } from '../components/providers/SettingsProvider';
 import styles from '../constants/styles';
 import type { AppSettings } from '../types';
 
-const CONFIGURABLE_KEYS = ['email', 'password', 'deviceIdentifier', 'userAgent', 'selectedTicketId'] as const;
+const CONFIGURABLE_KEYS = ['email', 'password', 'deviceIdentifier', 'selectedTicketId'] as const;
 type ConfigurableAppSettings = Pick<AppSettings, (typeof CONFIGURABLE_KEYS)[number]>;
 
 const Settings = () => {
@@ -52,11 +53,6 @@ const Settings = () => {
         setAppSettings((currentAppSettings) => ({ ...currentAppSettings, deviceIdentifier: newValue }));
     }, []);
 
-    const handleUserAgentChange = useCallback((newValue: string) => {
-        console.info(`userAgent changed to ${newValue}`);
-        setAppSettings((currentAppSettings) => ({ ...currentAppSettings, userAgent: newValue }));
-    }, []);
-
     const handleBlur = useCallback(() => {
         console.debug('blur');
         if (saveAppSettingsLoading || doLoginLoading) {
@@ -97,6 +93,7 @@ const Settings = () => {
         console.info('resetting app settings');
         doResetAppSettings();
         setReallyResetAppSettings(false);
+        router.navigate('/');
     }, [doResetAppSettings, reallyResetAppSettings]);
 
     let loginStatusString;
@@ -175,14 +172,14 @@ const Settings = () => {
                             onPress={() => handleSelectedTicketChanged(id)}
                         />
                     ))}
-                    <Card.Actions>
-                        {doLoginLoading ? (
-                            <IconButton icon="login" loading disabled accessibilityLabel="refreshing tickets" />
-                        ) : (
-                            <Button onPress={refreshTicketsButtonPressed}>Refresh Tickets</Button>
-                        )}
-                    </Card.Actions>
                 </Card.Content>
+                <Card.Actions>
+                    {doLoginLoading ? (
+                        <IconButton icon="login" loading disabled accessibilityLabel="refreshing tickets" />
+                    ) : (
+                        <Button onPress={refreshTicketsButtonPressed}>Refresh Tickets</Button>
+                    )}
+                </Card.Actions>
             </Card>
             <Card>
                 <Card.Title title="Experteneinstellungen" />
@@ -193,18 +190,12 @@ const Settings = () => {
                         onChangeText={handleDeviceIdentifierChange}
                         onBlur={handleBlur}
                     />
-                    <TextInput
-                        label="User Agent"
-                        value={appSettings.userAgent}
-                        onChangeText={handleUserAgentChange}
-                        onBlur={handleBlur}
-                    />
-                    <Card.Actions>
-                        <Button onPress={handleResetAppSettings}>
-                            {reallyResetAppSettings ? 'Wirklich?' : 'Einstellungen Zurücksetzen'}
-                        </Button>
-                    </Card.Actions>
                 </Card.Content>
+                <Card.Actions>
+                    <Button onPress={handleResetAppSettings}>
+                        {reallyResetAppSettings ? 'Wirklich?' : 'Einstellungen Zurücksetzen'}
+                    </Button>
+                </Card.Actions>
             </Card>
         </Page>
     );

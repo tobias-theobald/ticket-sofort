@@ -18,6 +18,10 @@ const DEVICE_IDENTIFIER_KEY = 'Device-Identifier';
 
 const TICKEOS_AUTHORIZATION_TYPE = 'TICKeos';
 
+const compatibleAppVersions: Record<string, string> = {
+    'SaarVV Android/2022.03': '3.10.17',
+};
+
 const setRequestSignature = async (
     applicationKey: string,
     url: URL,
@@ -60,11 +64,14 @@ export const ticketBackendRequest = async <T>(
     expectedResponseType: ZodType<T>,
 ): Promise<T> => {
     const appSettings = await getAppSettings();
-    const { backendHost, backendRoute, applicationKey } = await getRemoteSettings();
+    const { backendHost, backendRoute, applicationKey, mobileServiceAPIVersion, identifier, clientName } =
+        await getRemoteSettings();
+    const compatibleAppVersion = compatibleAppVersions[`${clientName}/${mobileServiceAPIVersion}`];
+    const userAgent = `${clientName}/${compatibleAppVersion}/${mobileServiceAPIVersion}/${identifier} (ticket-sofort)`;
 
     const headers = new Headers({
         [CONTENT_TYPE_KEY]: CONTENT_TYPE_DEFAULT,
-        [USER_AGENT_KEY]: appSettings.userAgent,
+        [USER_AGENT_KEY]: userAgent,
         [DEVICE_IDENTIFIER_KEY]: appSettings.deviceIdentifier,
     });
 

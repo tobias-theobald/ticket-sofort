@@ -75,9 +75,6 @@ export function encode(encoded: ArrayBuffer, encoding: SupportedOutputEncodings 
     }
 }
 
-// This is not recommended for cryptographic use, as it is not secure.
-// However, it's only used in the SVV app to calculate the device identifier
-// and for that it is fine
 export function sha512(
     input: string,
     inputEncoding: SupportedInputStringEncodings,
@@ -109,6 +106,29 @@ export async function sha512(
     );
 }
 
+// This is not recommended for cryptographic use, as it is not secure.
+// However, it's only used in the SVV app to calculate the device identifier
+// and for that it is fine
+export function sha1(
+    input: string,
+    inputEncoding: SupportedInputStringEncodings,
+    outputEncoding: SupportedOutputStringEncodings,
+): Promise<string>;
+export function sha1(
+    input: ArrayBuffer,
+    inputEncoding: SupportedInputBufferEncodings,
+    outputEncoding: SupportedOutputStringEncodings,
+): Promise<string>;
+export function sha1(
+    input: string,
+    inputEncoding: SupportedInputStringEncodings,
+    outputEncoding: SupportedOutputBufferEncodings,
+): Promise<ArrayBuffer>;
+export function sha1(
+    input: ArrayBuffer,
+    inputEncoding: SupportedInputBufferEncodings,
+    outputEncoding: SupportedOutputBufferEncodings,
+): Promise<ArrayBuffer>;
 export async function sha1(
     input: string | ArrayBuffer,
     inputEncoding: SupportedInputEncodings,

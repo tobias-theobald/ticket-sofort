@@ -2,8 +2,8 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
     ...config,
-    name: 'Savauvau Ticket',
-    slug: 'svv-ticket',
+    name: 'TicketSofort',
+    slug: 'ticketsofort',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/images/icon.png',

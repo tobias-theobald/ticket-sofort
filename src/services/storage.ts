@@ -1,16 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import type { AppSettings } from '../types';
+import { sha1 } from '../util/hashAlgorithms';
 
 export const APP_SETTINGS_KEY = 'appSettings';
 
-export const getDefaultAppSettings = (): AppSettings => {
+export const getDefaultAppSettings = async (): Promise<AppSettings> => {
     return {
         email: '',
         password: '',
         accessToken: null,
-        deviceIdentifier: '69420694206942069420694206942069',
-        userAgent: 'SaarVV Android/3.10.17/2022.03/saarvv-live (savauvau-app)',
+        deviceIdentifier: await sha1(Date.now().toString(), 'utf-8', 'hex'),
         availableTickets: {},
         selectedTicketId: null,
     };

@@ -1,10 +1,11 @@
 import { ThemeProvider } from '@react-navigation/native';
 import { Link, Stack } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import { useEffect } from 'react';
+import { AppState, useColorScheme } from 'react-native';
 import { IconButton, PaperProvider } from 'react-native-paper';
 
 import { ReactQueryClientProvider } from '../components/providers/ReactQueryClientProvider';
-import { SettingsProvider } from '../components/providers/SettingsProvider';
+import { SettingsProvider, useSettings } from '../components/providers/SettingsProvider';
 import {
     ModifiedReactNativePaperDarkTheme,
     ModifiedReactNativePaperLightTheme,
@@ -14,6 +15,35 @@ import {
 
 export const NAVBAR_ICON_SIZE = 24;
 
+const IndexHeaderRight = () => {
+    const { doRefreshTickets, doLoginLoading } = useSettings();
+
+    useEffect(() => {
+        const subscription = AppState.addEventListener('change', (nextAppState) => {
+            if (nextAppState === 'active') {
+                doRefreshTickets();
+            }
+        });
+
+        return () => subscription.remove();
+    }, [doRefreshTickets]);
+
+    return (
+        <>
+            <IconButton
+                icon={'refresh'}
+                size={NAVBAR_ICON_SIZE}
+                accessibilityLabel="refresh"
+                onPress={doRefreshTickets}
+                loading={doLoginLoading}
+            />
+            <Link asChild href="/settings">
+                <IconButton icon="cog" size={NAVBAR_ICON_SIZE} accessibilityLabel="settings" />
+            </Link>
+        </>
+    );
+};
+
 export function RootLayout() {
     return (
         <Stack>
@@ -21,13 +51,7 @@ export function RootLayout() {
                 name="index"
                 options={{
                     title: 'Ticket',
-                    headerRight: () => (
-                        <>
-                            <Link asChild href="/settings">
-                                <IconButton icon="cog" size={NAVBAR_ICON_SIZE} accessibilityLabel="settings" />
-                            </Link>
-                        </>
-                    ),
+                    headerRight: IndexHeaderRight,
                 }}
             />
             <Stack.Screen

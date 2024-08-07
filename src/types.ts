@@ -67,7 +67,6 @@ export type FullTicketDecoded = z.infer<typeof FullTicket> & {
 export type AppSettings = {
     email: string;
     password: string;
-    userAgent: string;
     deviceIdentifier: string;
     accessToken: string | null;
     availableTickets: Record<string, FullTicketDecoded>;
@@ -78,4 +77,7 @@ export type RemoteSettings = {
     backendHost: string;
     applicationKey: string;
     backendRoute: string;
+    clientName: string;
+    mobileServiceAPIVersion: string;
+    identifier: string;
 };

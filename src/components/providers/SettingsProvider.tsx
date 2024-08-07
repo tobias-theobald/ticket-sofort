@@ -31,22 +31,18 @@ export const SettingsProvider = ({ children }: PropsWithChildren) => {
         queryFn: getAppSettings,
     });
 
-    const resetSettingsMutation = useMutation({
-        mutationFn: resetAppSettings,
-        onSuccess: () => {
-            getSettingQuery.refetch().catch(console.error);
-        },
-    });
-
     const refetchAppSettings = useCallback(() => {
         getSettingQuery.refetch().catch(console.error);
     }, [getSettingQuery]);
 
+    const resetSettingsMutation = useMutation({
+        mutationFn: resetAppSettings,
+        onSuccess: refetchAppSettings,
+    });
     const saveSettingsMutation = useMutation({
         mutationFn: saveAppSettings,
         onSuccess: refetchAppSettings,
     });
-
     const doLoginMutation = useMutation({
         mutationFn: loginWorkflow,
         onSuccess: refetchAppSettings,
