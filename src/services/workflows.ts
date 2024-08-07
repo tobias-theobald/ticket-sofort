@@ -17,7 +17,13 @@ export async function loginWorkflow(): Promise<void> {
 
 export async function logoutWorkflow(): Promise<void> {
     const appSettings: AppSettings = await getAppSettings();
-    await saveAppSettings({ ...appSettings, accessToken: null, selectedTicketId: null, availableTickets: {} });
+    await saveAppSettings({
+        ...appSettings,
+        accessToken: null,
+        selectedTicketId: null,
+        availableTickets: {},
+        lastTicketSync: null,
+    });
 }
 
 export async function refreshTicketsWorkflow({ forceRefresh }: { forceRefresh: boolean }): Promise<void> {
@@ -27,14 +33,12 @@ export async function refreshTicketsWorkflow({ forceRefresh }: { forceRefresh: b
     }
     const ticketIds = await ticketIdsRequest();
     const existingTicketIds = Object.keys(appSettings.availableTickets);
-    let changed = false;
     let fullTickets: Record<string, FullTicketDecoded>;
     if (
         forceRefresh ||
         ticketIds.length !== existingTicketIds.length ||
         !existingTicketIds.every((ticketId) => ticketIds.includes(ticketId))
     ) {
-        changed = true;
         fullTickets = await fullTicketsRequest(ticketIds);
     } else {
         // No need to refresh tickets
@@ -42,12 +46,14 @@ export async function refreshTicketsWorkflow({ forceRefresh }: { forceRefresh: b
     }
     let selectedTicketId = appSettings.selectedTicketId;
     if (selectedTicketId && !Object.keys(fullTickets).includes(selectedTicketId)) {
-        changed = true;
         selectedTicketId = null;
     }
-    if (changed) {
-        await saveAppSettings({ ...appSettings, selectedTicketId, availableTickets: fullTickets });
-    }
+    await saveAppSettings({
+        ...appSettings,
+        selectedTicketId,
+        availableTickets: fullTickets,
+        lastTicketSync: new Date().toUTCString(),
+    });
 }
 
 export const useValidTicket = (appSettings: AppSettings): [string, FullTicketDecoded] | string => {

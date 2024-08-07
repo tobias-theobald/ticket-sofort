@@ -12,6 +12,7 @@ export const getDefaultAppSettings = async (): Promise<AppSettings> => {
         accessToken: null,
         deviceIdentifier: await sha1(Date.now().toString(), 'utf-8', 'hex'),
         availableTickets: {},
+        lastTicketSync: null,
         selectedTicketId: null,
     };
 };

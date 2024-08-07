@@ -67,7 +67,7 @@ TicketSofort uses Expo's EAS build service to create builds for both iOS and And
 
 ### MVP
 - [x] Data-saving refresh mechanism. Don't load the whole ticket if it's already loaded.
-- [ ] Tap to set brightness to 100%
+- [x] Tap to set brightness to 100%
 
 ### Post-MVP
 - [ ] Implement settings encryption and (optionally) user authentication.

@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@react-navigation/native';
 import { Link, Stack } from 'expo-router';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { AppState, useColorScheme } from 'react-native';
 import { IconButton, PaperProvider } from 'react-native-paper';
 
@@ -14,9 +14,14 @@ import {
 } from '../constants/themes';
 
 export const NAVBAR_ICON_SIZE = 24;
+const TICKET_REFRESH_INTERVAL = 12 * 60 * 60 * 1000;
 
 const IndexHeaderRight = () => {
-    const { doRefreshTickets, doLoginLoading, loginStatus } = useSettings();
+    const { doRefreshTickets, doLoginLoading, loginStatus, appSettings } = useSettings();
+    const lastTicketSyncDate = useMemo<Date | null>(
+        () => (appSettings.lastTicketSync === null ? null : new Date(appSettings.lastTicketSync)),
+        [appSettings.lastTicketSync],
+    );
 
     const forceRefreshTickets = useCallback(() => {
         doRefreshTickets({ forceRefresh: true });
@@ -24,7 +29,11 @@ const IndexHeaderRight = () => {
 
     useEffect(() => {
         const subscription = AppState.addEventListener('change', (nextAppState) => {
-            if (nextAppState === 'active' && loginStatus === true) {
+            if (
+                nextAppState === 'active' &&
+                loginStatus === true &&
+                (lastTicketSyncDate === null || lastTicketSyncDate.getTime() + TICKET_REFRESH_INTERVAL < Date.now())
+            ) {
                 doRefreshTickets({ forceRefresh: false });
             }
         });

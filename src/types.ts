@@ -70,6 +70,7 @@ export type AppSettings = {
     deviceIdentifier: string;
     accessToken: string | null;
     availableTickets: Record<string, FullTicketDecoded>;
+    lastTicketSync: string | null;
     selectedTicketId: string | null;
 };
 
