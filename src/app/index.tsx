@@ -1,4 +1,7 @@
-import { Link } from 'expo-router';
+import * as Brightness from 'expo-brightness';
+import { Link, useNavigation } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
+import { AppState } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 
 import { CenterPage, PageNoScroll } from '../components/Page';
@@ -10,6 +13,55 @@ import { useValidTicket } from '../services/workflows';
 const TicketView = () => {
     const { appSettings, loginStatus } = useSettings();
     const validTicketResult = useValidTicket(appSettings);
+    const navigation = useNavigation();
+
+    const [prevBrightness, setPrevBrightness] = useState<number | null>(null);
+    const [permissionResponse, requestPermission] = Brightness.usePermissions();
+    const toggleBrightness = useCallback(() => {
+        if (!permissionResponse) {
+            // too early
+            return;
+        }
+        (async () => {
+            if (!permissionResponse.granted) {
+                if (permissionResponse.canAskAgain) {
+                    await requestPermission();
+                } else {
+                    console.info('no permission to change brightness');
+                }
+                return;
+            }
+            if (prevBrightness === null) {
+                const currentBrightness = await Brightness.getBrightnessAsync();
+                setPrevBrightness(currentBrightness);
+                await Brightness.setBrightnessAsync(1);
+            } else {
+                setPrevBrightness(null);
+                await Brightness.setBrightnessAsync(prevBrightness);
+            }
+        })().catch(console.error);
+    }, [permissionResponse, prevBrightness, requestPermission]);
+
+    useEffect(() => {
+        if (prevBrightness === null) {
+            return;
+        }
+        const blurCallback = () => {
+            Brightness.setBrightnessAsync(prevBrightness).catch(console.error);
+        };
+        const appStateChangeCallback = (nextAppState: string) => {
+            if (nextAppState !== 'active') {
+                blurCallback();
+            }
+        };
+        const unregisterBlurListener = navigation.addListener('blur', blurCallback);
+        const appStateSubscription = AppState.addEventListener('change', appStateChangeCallback);
+
+        return () => {
+            unregisterBlurListener();
+            appStateSubscription.remove();
+        };
+    }, [navigation, prevBrightness]);
 
     if (loginStatus !== true) {
         return (
@@ -35,7 +87,7 @@ const TicketView = () => {
     const [_validTicketId, validTicket] = validTicketResult;
 
     return (
-        <PageNoScroll>
+        <PageNoScroll onPress={toggleBrightness}>
             <TicketRenderer ticket={validTicket} />
         </PageNoScroll>
     );

@@ -1,5 +1,9 @@
 import type { PropsWithChildren } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+
+type PressableProps = {
+    onPress?: () => void;
+};
 
 export function Page({ children }: PropsWithChildren) {
     return (
@@ -25,12 +29,16 @@ export function CenterPage({ children }: PropsWithChildren) {
     );
 }
 
-export function PageNoScroll({ children }: PropsWithChildren) {
-    return (
+export function PageNoScroll({ children, onPress }: PropsWithChildren<PressableProps>) {
+    const content = (
         <SafeAreaView style={styles.container}>
             <View style={styles.page}>{children}</View>
         </SafeAreaView>
     );
+    if (!onPress) {
+        return content;
+    }
+    return <TouchableWithoutFeedback onPress={onPress}>{content}</TouchableWithoutFeedback>;
 }
 
 const styles = StyleSheet.create({
