@@ -82,7 +82,7 @@ const Settings = () => {
 
     const refreshTicketsButtonPressed = useCallback(() => {
         console.info('refresh tickets button pressed');
-        doRefreshTickets();
+        doRefreshTickets({ forceRefresh: true });
     }, [doRefreshTickets]);
 
     const handleResetAppSettings = useCallback(() => {

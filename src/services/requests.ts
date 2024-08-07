@@ -104,7 +104,7 @@ export const ticketBackendRequest = async <T>(
     if (!parsedResponse.success) {
         throw new Error(`Response does not match schema: ${JSON.stringify(parsedResponse.error, null, 2)}`);
     }
-    console.debug('Returning', parsedResponse.data);
+    // console.debug('Returning', parsedResponse.data);
     return parsedResponse.data;
 };
 
@@ -137,11 +137,11 @@ export const loginRequest = async ({ email: username, password }: LoginRequestPa
 };
 
 export const TicketIdsResponse = z.object({
-    // "credits": z.array(),
+    // "credits": z.array(), // no idea what these are for and I don't think we care for this app
     tickets: z.string().array(),
 });
 export const ticketIdsRequest = async (): Promise<string[]> => {
-    console.debug('Syncing');
+    console.debug('Requesting Ticket IDs');
     const response = await ticketBackendRequest('sync', 'POST', '{}', TicketIdsResponse);
     return response.tickets;
 };

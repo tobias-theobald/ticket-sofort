@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@react-navigation/native';
 import { Link, Stack } from 'expo-router';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { AppState, useColorScheme } from 'react-native';
 import { IconButton, PaperProvider } from 'react-native-paper';
 
@@ -16,17 +16,21 @@ import {
 export const NAVBAR_ICON_SIZE = 24;
 
 const IndexHeaderRight = () => {
-    const { doRefreshTickets, doLoginLoading } = useSettings();
+    const { doRefreshTickets, doLoginLoading, loginStatus } = useSettings();
+
+    const forceRefreshTickets = useCallback(() => {
+        doRefreshTickets({ forceRefresh: true });
+    }, [doRefreshTickets]);
 
     useEffect(() => {
         const subscription = AppState.addEventListener('change', (nextAppState) => {
-            if (nextAppState === 'active') {
-                doRefreshTickets();
+            if (nextAppState === 'active' && loginStatus === true) {
+                doRefreshTickets({ forceRefresh: false });
             }
         });
 
         return () => subscription.remove();
-    }, [doRefreshTickets]);
+    }, [doRefreshTickets, loginStatus]);
 
     return (
         <>
@@ -34,8 +38,9 @@ const IndexHeaderRight = () => {
                 icon={'refresh'}
                 size={NAVBAR_ICON_SIZE}
                 accessibilityLabel="refresh"
-                onPress={doRefreshTickets}
+                onPress={forceRefreshTickets}
                 loading={doLoginLoading}
+                disabled={loginStatus !== true}
             />
             <Link asChild href="/settings">
                 <IconButton icon="cog" size={NAVBAR_ICON_SIZE} accessibilityLabel="settings" />

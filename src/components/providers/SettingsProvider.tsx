@@ -15,7 +15,7 @@ export type SettingsContext = {
 
     doLogin: () => void;
     doLogout: () => void;
-    doRefreshTickets: () => void;
+    doRefreshTickets: (props: { forceRefresh: boolean }) => void;
     doLoginLoading: boolean;
 
     loginStatus: boolean | string;

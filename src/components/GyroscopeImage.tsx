@@ -12,7 +12,7 @@ export type GyroscopeImageProps = {
 const SENSOR_UPDATE_INTERVAL_MS = 200; // See the restriction on Android in the API docs
 
 const DEAD_ZONE = 0.1;
-const MAX_ROTATION = 0.5;
+const MAX_ROTATION = 1;
 
 const relevantRotationByOrientation = (deviceMotionMeasurement: DeviceMotionMeasurement) => {
     switch (deviceMotionMeasurement.orientation) {

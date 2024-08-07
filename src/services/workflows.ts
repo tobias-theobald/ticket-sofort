@@ -12,7 +12,7 @@ export async function loginWorkflow(): Promise<void> {
         password: appSettings.password,
     });
     await saveAppSettings({ ...appSettings, accessToken: newAccessToken });
-    return refreshTicketsWorkflow();
+    return refreshTicketsWorkflow({ forceRefresh: true });
 }
 
 export async function logoutWorkflow(): Promise<void> {
@@ -20,18 +20,34 @@ export async function logoutWorkflow(): Promise<void> {
     await saveAppSettings({ ...appSettings, accessToken: null, selectedTicketId: null, availableTickets: {} });
 }
 
-export async function refreshTicketsWorkflow(): Promise<void> {
+export async function refreshTicketsWorkflow({ forceRefresh }: { forceRefresh: boolean }): Promise<void> {
     const appSettings: AppSettings = await getAppSettings();
     if (!appSettings.accessToken) {
         throw new Error('Access token is required');
     }
     const ticketIds = await ticketIdsRequest();
-    const fullTickets = await fullTicketsRequest(ticketIds);
+    const existingTicketIds = Object.keys(appSettings.availableTickets);
+    let changed = false;
+    let fullTickets: Record<string, FullTicketDecoded>;
+    if (
+        forceRefresh ||
+        ticketIds.length !== existingTicketIds.length ||
+        !existingTicketIds.every((ticketId) => ticketIds.includes(ticketId))
+    ) {
+        changed = true;
+        fullTickets = await fullTicketsRequest(ticketIds);
+    } else {
+        // No need to refresh tickets
+        fullTickets = appSettings.availableTickets;
+    }
     let selectedTicketId = appSettings.selectedTicketId;
     if (selectedTicketId && !Object.keys(fullTickets).includes(selectedTicketId)) {
+        changed = true;
         selectedTicketId = null;
     }
-    await saveAppSettings({ ...appSettings, selectedTicketId, availableTickets: fullTickets });
+    if (changed) {
+        await saveAppSettings({ ...appSettings, selectedTicketId, availableTickets: fullTickets });
+    }
 }
 
 export const useValidTicket = (appSettings: AppSettings): [string, FullTicketDecoded] | string => {
