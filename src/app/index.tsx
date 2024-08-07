@@ -8,9 +8,11 @@ import { CenterPage, PageNoScroll } from '../components/Page';
 import { useSettings } from '../components/providers/SettingsProvider';
 import { TicketRenderer } from '../components/TicketRenderer';
 import styles from '../constants/styles';
+import { useI18nContext } from '../i18n/i18n-react';
 import { useValidTicket } from '../services/workflows';
 
 const TicketView = () => {
+    const { LL } = useI18nContext();
     const { appSettings, loginStatus } = useSettings();
     const validTicketResult = useValidTicket(appSettings);
     const navigation = useNavigation();
@@ -66,9 +68,9 @@ const TicketView = () => {
     if (loginStatus !== true) {
         return (
             <CenterPage>
-                <Text style={styles.mediumMarginBottom}>Bitte einloggen um Tickets anzuzeigen</Text>
+                <Text style={styles.mediumMarginBottom}>{LL.ticketScreenNotLoggedIn()}</Text>
                 <Link href="/settings" asChild>
-                    <Button mode="contained">Zu den Einstellungen</Button>
+                    <Button mode="contained">{LL.ticketScreenGoToSettings()}</Button>
                 </Link>
             </CenterPage>
         );
@@ -78,7 +80,7 @@ const TicketView = () => {
             <CenterPage>
                 <Text style={styles.mediumMarginBottom}>{validTicketResult}</Text>
                 <Link href="/settings" asChild>
-                    <Button mode="contained">Zu den Einstellungen</Button>
+                    <Button mode="contained">{LL.ticketScreenGoToSettings()}</Button>
                 </Link>
             </CenterPage>
         );

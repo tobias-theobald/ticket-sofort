@@ -1,6 +1,7 @@
 import { z, type ZodType } from 'zod';
 
 import { FullTicket, type FullTicketDecoded, TicketMetaDecoded, TicketTemplateDecoded } from '../types';
+import { getGlobalLL } from '../util/getAndLoadLocale';
 import { hmacSha512FromUtf8InputAsHex } from '../util/hashAlgorithms';
 import { getRemoteSettings } from './remoteSettings';
 import { getAppSettings } from './storage';
@@ -91,18 +92,24 @@ export const ticketBackendRequest = async <T>(
 
     const responseText = await response.text();
     let responseJson;
-    if (response.headers.get('content-type')?.startsWith('application/json')) {
+    if (response.headers.get(CONTENT_TYPE_KEY)?.startsWith('application/json')) {
         responseJson = JSON.parse(responseText);
     }
     if (!response.ok || responseJson === undefined) {
         console.error('Request failed:', responseText);
-        throw new Error(
-            `Login failed: HTTP ${response.status}\n${JSON.stringify(responseJson ?? responseText, null, 2)}`,
-        );
+        if (responseJson !== undefined && typeof responseJson.message === 'string') {
+            throw new Error(`${getGlobalLL().requestError()}: ${responseJson.message}`);
+        } else {
+            throw new Error(
+                `${getGlobalLL().requestError()}: HTTP ${response.status}\n${JSON.stringify(responseJson ?? responseText, null, 2)}`,
+            );
+        }
     }
     const parsedResponse = expectedResponseType.safeParse(responseJson);
     if (!parsedResponse.success) {
-        throw new Error(`Response does not match schema: ${JSON.stringify(parsedResponse.error, null, 2)}`);
+        throw new Error(
+            `${getGlobalLL().requestResponseSchemaError()}: ${JSON.stringify(parsedResponse.error, null, 2)}`,
+        );
     }
     // console.debug('Returning', parsedResponse.data);
     return parsedResponse.data;
@@ -147,7 +154,6 @@ export const ticketIdsRequest = async (): Promise<string[]> => {
 };
 
 export const FullTicketsResponse = z.object({
-    // "credits": z.array(),
     tickets: z.record(FullTicket),
 });
 export const fullTicketsRequest = async (ticketIds: string[]): Promise<Record<string, FullTicketDecoded>> => {

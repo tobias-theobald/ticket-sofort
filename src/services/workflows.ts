@@ -1,11 +1,12 @@
 import type { AppSettings, FullTicketDecoded } from '../types';
+import { getGlobalLL } from '../util/getAndLoadLocale';
 import { fullTicketsRequest, loginRequest, ticketIdsRequest } from './requests';
 import { getAppSettings, saveAppSettings } from './storage';
 
 export async function loginWorkflow(): Promise<void> {
     const appSettings: AppSettings = await getAppSettings();
     if (!appSettings.email || !appSettings.password) {
-        throw new Error('Email and password are required');
+        throw new Error(getGlobalLL().workflowLoginErrorRequired());
     }
     const newAccessToken = await loginRequest({
         email: appSettings.email,
@@ -29,7 +30,7 @@ export async function logoutWorkflow(): Promise<void> {
 export async function refreshTicketsWorkflow({ forceRefresh }: { forceRefresh: boolean }): Promise<void> {
     const appSettings: AppSettings = await getAppSettings();
     if (!appSettings.accessToken) {
-        throw new Error('Access token is required');
+        throw new Error(getGlobalLL().workflowRefreshErrorNoAccessToken());
     }
     const ticketIds = await ticketIdsRequest();
     const existingTicketIds = Object.keys(appSettings.availableTickets);
@@ -64,14 +65,14 @@ export const useValidTicket = (appSettings: AppSettings): [string, FullTicketDec
         selectedTicketKey = appSettings.selectedTicketId;
         selectedTicket = appSettings.availableTickets[appSettings.selectedTicketId];
         if (selectedTicket === undefined) {
-            return 'Gewähltes Ticket nicht (mehr) verfügbar. Bitte ein neues Ticket auswählen.';
+            return getGlobalLL().workflowValidTicketNoLongerAvailable();
         }
         const validityEnd = new Date(selectedTicket.metaDecoded.validity_end);
         if (validityEnd < now) {
-            return 'Gewähltes Ticket ist abgelaufen. Bitte ein neues Ticket auswählen.';
+            return getGlobalLL().workflowValidTicketExpired();
         }
     } else if (Object.keys(appSettings.availableTickets).length === 0) {
-        return 'Keine Tickets verfügbar. Bitte ein aktualisieren Sie Ihre Tickets.';
+        return getGlobalLL().workflowValidTicketNoTickets();
     } else {
         const ticketsSorted = Object.entries(appSettings.availableTickets)
             .filter(([_id, ticket]) => {

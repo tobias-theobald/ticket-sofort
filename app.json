@@ -7,6 +7,7 @@
       "projectId": "379d81d4-874b-47f5-9674-fd1875c486f4"
     }
   },
+  "jsEngine": "hermes",
   "orientation": "portrait",
   "icon": "./assets/images/icon.png",
   "scheme": "svvticket",
@@ -38,7 +39,8 @@
       {
         "motionPermission": "Allow $(PRODUCT_NAME) to access your device motion."
       }
-    ]
+    ],
+    "expo-localization"
   ],
   "experiments": {
     "typedRoutes": true

@@ -6,12 +6,15 @@ import { Button, Card, HelperText, IconButton, List, Text, TextInput } from 'rea
 import { Page } from '../components/Page';
 import { useSettings } from '../components/providers/SettingsProvider';
 import styles from '../constants/styles';
+import { useI18nContext } from '../i18n/i18n-react';
 import type { AppSettings } from '../types';
 
 const CONFIGURABLE_KEYS = ['email', 'password', 'deviceIdentifier', 'selectedTicketId'] as const;
 type ConfigurableAppSettings = Pick<AppSettings, (typeof CONFIGURABLE_KEYS)[number]>;
 
 const Settings = () => {
+    const { LL } = useI18nContext();
+
     const {
         appSettings: initialAppSettings,
 
@@ -54,7 +57,7 @@ const Settings = () => {
     }, []);
 
     const handleBlur = useCallback(() => {
-        console.debug('blur');
+        console.debug('blur settings form');
         if (saveAppSettingsLoading || doLoginLoading) {
             return;
         }
@@ -100,19 +103,19 @@ const Settings = () => {
     if (typeof loginStatus === 'string') {
         loginStatusString = loginStatus;
     } else if (loginStatus) {
-        loginStatusString = 'Logged In';
+        loginStatusString = LL.settingsScreenLoggedIn();
     } else {
-        loginStatusString = 'Logged Out';
+        loginStatusString = LL.settingsScreenLoggedOut();
     }
 
     return (
         <Page>
             <Card style={styles.mediumMarginBottom}>
-                <Card.Title title="SaarVV Konto" />
+                <Card.Title title={LL.settingsScreenAccountTitle()} />
                 <Card.Content>
                     <View style={styles.mediumMarginBottom}>
                         <TextInput
-                            label="E-Mail"
+                            label={LL.settingsScreenAccountEmail()}
                             textContentType={'emailAddress'}
                             autoCapitalize={'none'}
                             value={appSettings.email}
@@ -120,7 +123,7 @@ const Settings = () => {
                             onBlur={handleBlur}
                         />
                         <TextInput
-                            label="Passwort"
+                            label={LL.settingsScreenAccountPassword()}
                             textContentType={'password'}
                             autoCapitalize={'none'}
                             value={appSettings.password}
@@ -130,7 +133,9 @@ const Settings = () => {
                         />
                     </View>
                     {saveAppSettingsError && <HelperText type="error">{saveAppSettingsError}</HelperText>}
-                    <Text>Status: {loginStatusString}</Text>
+                    <Text>
+                        {LL.settingsScreenAccountStatus()}: {loginStatusString}
+                    </Text>
                 </Card.Content>
                 <Card.Actions>
                     {doLoginLoading ? (
@@ -138,20 +143,24 @@ const Settings = () => {
                             icon="login"
                             loading
                             disabled
-                            accessibilityLabel="logging in or refreshing tickets"
+                            accessibilityLabel={LL.settingsScreenAccountA11yLoggingIn()}
                         />
                     ) : (
-                        <Button onPress={loginButtonPressed}>Log {loginStatus === true ? 'Out' : 'In'}</Button>
+                        <Button onPress={loginButtonPressed}>
+                            {loginStatus === true ? LL.settingsScreenAccountLogout() : LL.settingsScreenAccountLogin()}
+                        </Button>
                     )}
                 </Card.Actions>
             </Card>
             <Card style={styles.mediumMarginBottom}>
-                <Card.Title title="Tickets" />
+                <Card.Title title={LL.settingsScreenTicketsTitle()} />
                 <Card.Content>
-                    <Text>Verfügbare Tickets: {Object.keys(initialAppSettings.availableTickets).length}</Text>
+                    <Text>
+                        {LL.settingsScreenTicketsAvailable()}: {Object.keys(initialAppSettings.availableTickets).length}
+                    </Text>
                     <List.Item
-                        title={`Ticket automatisch auswählen`}
-                        description={`Wählt das beste Ticket für das aktuelle Datum aus`}
+                        title={LL.settingsScreenTicketsAutomaticTitle()}
+                        description={LL.settingsScreenTicketsAutomaticDescription()}
                         right={
                             appSettings.selectedTicketId === null
                                 ? (props) => <List.Icon {...props} icon="check" />
@@ -163,7 +172,10 @@ const Settings = () => {
                         <List.Item
                             key={id}
                             title={`${ticket.metaDecoded.title} (${id})`}
-                            description={`Gültig von ${ticket.metaDecoded.validity_begin} bis ${ticket.metaDecoded.validity_end}`}
+                            description={LL.settingsScreenTicketsValidity({
+                                validFrom: ticket.metaDecoded.validity_begin,
+                                validTo: ticket.metaDecoded.validity_end,
+                            })}
                             right={
                                 appSettings.selectedTicketId === id
                                     ? (props) => <List.Icon {...props} icon="check" />
@@ -175,17 +187,22 @@ const Settings = () => {
                 </Card.Content>
                 <Card.Actions>
                     {doLoginLoading ? (
-                        <IconButton icon="login" loading disabled accessibilityLabel="refreshing tickets" />
+                        <IconButton
+                            icon="login"
+                            loading
+                            disabled
+                            accessibilityLabel={LL.settingsScreenTicketsRefreshing()}
+                        />
                     ) : (
-                        <Button onPress={refreshTicketsButtonPressed}>Refresh Tickets</Button>
+                        <Button onPress={refreshTicketsButtonPressed}>{LL.settingsScreenTicketsRefresh()}</Button>
                     )}
                 </Card.Actions>
             </Card>
             <Card>
-                <Card.Title title="Experteneinstellungen" />
+                <Card.Title title={LL.settingsScreenExpertTitle()} />
                 <Card.Content>
                     <TextInput
-                        label="Device ID"
+                        label={LL.settingsScreenExpertDeviceId()}
                         value={appSettings.deviceIdentifier}
                         onChangeText={handleDeviceIdentifierChange}
                         onBlur={handleBlur}
@@ -193,7 +210,7 @@ const Settings = () => {
                 </Card.Content>
                 <Card.Actions>
                     <Button onPress={handleResetAppSettings}>
-                        {reallyResetAppSettings ? 'Wirklich?' : 'Einstellungen Zurücksetzen'}
+                        {reallyResetAppSettings ? LL.settingsScreenExpertReallyReset() : LL.settingsScreenExpertReset()}
                     </Button>
                 </Card.Actions>
             </Card>
