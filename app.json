@@ -1,0 +1,46 @@
+{
+  "name": "TicketSofort",
+  "slug": "ticketsofort",
+  "version": "1.0.0",
+  "extra": {
+    "eas": {
+      "projectId": "379d81d4-874b-47f5-9674-fd1875c486f4"
+    }
+  },
+  "orientation": "portrait",
+  "icon": "./assets/images/icon.png",
+  "scheme": "svvticket",
+  "userInterfaceStyle": "automatic",
+  "splash": {
+    "image": "./assets/images/splash.png",
+    "resizeMode": "contain",
+    "backgroundColor": "#ffffff"
+  },
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "ios": {
+    "bundleIdentifier": "dev.ticketsofort.ios",
+    "supportsTablet": true
+  },
+  "android": {
+    "package": "dev.ticketsofort.android",
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/images/adaptive-icon.png",
+      "backgroundColor": "#ffffff"
+    }
+  },
+  "plugins": [
+    "expo-router",
+    [
+      "expo-sensors",
+      {
+        "motionPermission": "Allow $(PRODUCT_NAME) to access your device motion."
+      }
+    ]
+  ],
+  "experiments": {
+    "typedRoutes": true
+  }
+}
