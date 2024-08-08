@@ -23,26 +23,34 @@
   ],
   "ios": {
     "bundleIdentifier": "dev.ticketsofort.ios",
-    "supportsTablet": true
+    "supportsTablet": true,
+    "infoPlist": {
+      "CFBundleAllowMixedLocalizations": true
+    }
   },
   "android": {
     "package": "dev.ticketsofort.android",
     "adaptiveIcon": {
       "foregroundImage": "./assets/images/adaptive-icon.png",
       "backgroundColor": "#ffffff"
-    }
+    },
+    "blockedPermissions": ["android.permission.SYSTEM_ALERT_WINDOW", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.ACTIVITY_RECOGNITION", "android.permission.VIBRATE", "android.permission.WRITE_SETTINGS"]
   },
   "plugins": [
     "expo-router",
     [
       "expo-sensors",
       {
-        "motionPermission": "Allow $(PRODUCT_NAME) to access your device motion."
+        "motionPermission": false
       }
     ],
     "expo-localization"
   ],
   "experiments": {
     "typedRoutes": true
+  },
+  "locales": {
+    "en": "./i18n-meta/en.json",
+    "de": "./i18n-meta/de.json"
   }
 }
