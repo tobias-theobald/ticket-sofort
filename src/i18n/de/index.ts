@@ -13,7 +13,7 @@ const de = {
     settingsScreenLoggedIn: 'Eingeloggt',
     settingsScreenLoggedOut: 'Ausgeloggt',
     settingsScreenAccountTitle: 'SaarVV Konto',
-    settingsScreenAccountEmail: 'E-Mail',
+    settingsScreenAccountUsername: 'E-Mail',
     settingsScreenAccountPassword: 'Passwort',
     settingsScreenAccountStatus: 'Status',
     settingsScreenAccountLogin: 'Einloggen',

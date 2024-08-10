@@ -1,28 +1,28 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import type { AppSettings } from '../types';
-import { sha1 } from '../util/hashAlgorithms';
+import { AppSettings } from '../types';
 
 export const APP_SETTINGS_KEY = 'appSettings';
 
 export const getDefaultAppSettings = async (): Promise<AppSettings> => {
-    return {
-        email: '',
-        password: '',
-        accessToken: null,
-        deviceIdentifier: await sha1(Date.now().toString(), 'utf-8', 'hex'),
-        availableTickets: {},
-        lastTicketSync: null,
-        selectedTicketId: null,
-    };
+    // let zod defaults handle populating the object
+    return AppSettings.parse({});
 };
 
 export const getAppSettings = async (): Promise<AppSettings> => {
     const storedAppSettings = await AsyncStorage.getItem(APP_SETTINGS_KEY);
-    if (storedAppSettings !== null) {
-        return JSON.parse(storedAppSettings);
+    if (storedAppSettings === null) {
+        return getDefaultAppSettings();
+    } else {
+        const jsonAppSettings = JSON.parse(storedAppSettings);
+        const parsedAppSettings = AppSettings.parse(jsonAppSettings);
+
+        // Migration from previous settings version (only used in one alpha version, but still)
+        if (parsedAppSettings.username === '' && typeof jsonAppSettings.email === 'string') {
+            parsedAppSettings.username = jsonAppSettings.email;
+        }
+        return parsedAppSettings;
     }
-    return getDefaultAppSettings();
 };
 
 export const saveAppSettings = async (settings: AppSettings): Promise<void> => {

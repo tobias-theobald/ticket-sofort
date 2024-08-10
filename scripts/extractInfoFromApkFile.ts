@@ -47,5 +47,5 @@ decrypted += decipher.final('utf-8');
 const { instances } = JSON.parse(decrypted);
 const productionInstance = instances.find((instance: Record<string, unknown>) => instance.backendType === 'live');
 const productionInstanceJson = JSON.stringify(productionInstance, null, 2);
-writeFileSync('assets/productionInstance.json', productionInstanceJson);
+writeFileSync(`assets/remoteConfigs/${flavor}.json`, productionInstanceJson);
 console.info(productionInstanceJson);

@@ -57,7 +57,7 @@ type RootTranslation = {
 	/**
 	 * E​-​M​a​i​l
 	 */
-	settingsScreenAccountEmail: string
+	settingsScreenAccountUsername: string
 	/**
 	 * P​a​s​s​w​o​r​d
 	 */
@@ -198,7 +198,7 @@ export type TranslationFunctions = {
 	/**
 	 * E-Mail
 	 */
-	settingsScreenAccountEmail: () => LocalizedString
+	settingsScreenAccountUsername: () => LocalizedString
 	/**
 	 * Password
 	 */

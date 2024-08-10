@@ -13,7 +13,7 @@ import {
     ModifiedReactNavigationLightTheme,
 } from '../constants/themes';
 import TypesafeI18n, { useI18nContext } from '../i18n/i18n-react';
-import { getAndLoadLocale } from '../util/getAndLoadLocale';
+import { getAndLoadLocale, getEffectiveLocale } from '../util/getAndLoadLocale';
 
 export const NAVBAR_ICON_SIZE = 24;
 const TICKET_REFRESH_INTERVAL = 12 * 60 * 60 * 1000;
@@ -36,14 +36,17 @@ const IndexHeaderRight = () => {
             if (
                 nextAppState === 'active' &&
                 loginStatus === true &&
-                (lastTicketSyncDate === null || lastTicketSyncDate.getTime() + TICKET_REFRESH_INTERVAL < Date.now())
+                (lastTicketSyncDate === null ||
+                    lastTicketSyncDate.getTime() + TICKET_REFRESH_INTERVAL < Date.now() ||
+                    getEffectiveLocale() !== appSettings.ticketFetchLocale)
             ) {
-                doRefreshTickets({ forceRefresh: false });
+                // Force refresh when language changed from last fetch
+                doRefreshTickets({ forceRefresh: getEffectiveLocale() !== appSettings.ticketFetchLocale });
             }
         });
 
         return () => subscription.remove();
-    }, [doRefreshTickets, lastTicketSyncDate, loginStatus]);
+    }, [appSettings.ticketFetchLocale, doRefreshTickets, lastTicketSyncDate, loginStatus]);
 
     return (
         <>

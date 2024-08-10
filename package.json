@@ -10,13 +10,13 @@
   },
   "scripts": {
     "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "test": "jest --watchAll",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
+    "codegen:typesafe-i18n": "typesafe-i18n --no-watch",
     "script:extractor": "bun run scripts/extractInfoFromApkFile.ts"
   },
   "author": "Tobias Theobald <tobitheo@gmail.com>",

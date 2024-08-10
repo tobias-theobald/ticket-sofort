@@ -1,18 +1,18 @@
-import type { AppSettings, FullTicketDecoded } from '../types';
-import { getGlobalLL } from '../util/getAndLoadLocale';
+import type { AppSettings, FullTicketDecoded, LoginCredentials } from '../types';
+import { getEffectiveLocale, getGlobalLL } from '../util/getAndLoadLocale';
 import { fullTicketsRequest, loginRequest, ticketIdsRequest } from './requests';
 import { getAppSettings, saveAppSettings } from './storage';
 
-export async function loginWorkflow(): Promise<void> {
+export async function loginWorkflow({ username, password }: LoginCredentials): Promise<void> {
     const appSettings: AppSettings = await getAppSettings();
-    if (!appSettings.email || !appSettings.password) {
+    if (!username || !password) {
         throw new Error(getGlobalLL().workflowLoginErrorRequired());
     }
     const newAccessToken = await loginRequest({
-        email: appSettings.email,
-        password: appSettings.password,
+        username,
+        password,
     });
-    await saveAppSettings({ ...appSettings, accessToken: newAccessToken });
+    await saveAppSettings({ ...appSettings, username, accessToken: newAccessToken });
     return refreshTicketsWorkflow({ forceRefresh: true });
 }
 
@@ -54,6 +54,7 @@ export async function refreshTicketsWorkflow({ forceRefresh }: { forceRefresh: b
         selectedTicketId,
         availableTickets: fullTickets,
         lastTicketSync: new Date().toUTCString(),
+        ticketFetchLocale: getEffectiveLocale(),
     });
 }
 

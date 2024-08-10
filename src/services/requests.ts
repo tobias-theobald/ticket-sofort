@@ -1,9 +1,15 @@
 import { z, type ZodType } from 'zod';
 
-import { FullTicket, type FullTicketDecoded, TicketMetaDecoded, TicketTemplateDecoded } from '../types';
+import {
+    FullTicket,
+    type FullTicketDecoded,
+    type LoginCredentials,
+    TicketMetaDecoded,
+    TicketTemplateDecoded,
+} from '../types';
 import { getGlobalLL } from '../util/getAndLoadLocale';
 import { hmacSha512FromUtf8InputAsHex } from '../util/hashAlgorithms';
-import { getRemoteSettings } from './remoteSettings';
+import { getRemoteConfig } from './remoteConfig';
 import { getAppSettings } from './storage';
 
 const HASH_DELIMITER = '|';
@@ -46,13 +52,10 @@ const setRequestSignature = async (
     hashContent += headers.get(EOS_DATE_KEY) + HASH_DELIMITER;
     hashContent += (headers.get(CONTENT_TYPE_KEY) ?? '') + HASH_DELIMITER;
     hashContent += (headers.get(AUTHORIZATION_KEY) ?? '') + HASH_DELIMITER;
-    hashContent += (headers.get('X-TICKeos-Anonymous') ?? '') + HASH_DELIMITER;
-    hashContent += (headers.get('X-EOS-SSO') ?? '') + HASH_DELIMITER;
+    hashContent += (headers.get('X-TICKeos-Anonymous') ?? '') + HASH_DELIMITER; // Header unsupported by this app
+    hashContent += (headers.get('X-EOS-SSO') ?? '') + HASH_DELIMITER; // Header unsupported by this app
     hashContent += headers.get(USER_AGENT_KEY) ?? '';
 
-    // const fullHmac = createHmac('sha512', applicationKey, { encoding: 'utf-8' });
-    // fullHmac.update(hashContent, 'utf-8');
-    // const fullHmacStr: string = fullHmac.digest().toString('hex');
     const fullHmacStr: string = await hmacSha512FromUtf8InputAsHex(hashContent, applicationKey);
 
     headers.set(API_SIGNATURE_KEY, fullHmacStr);
@@ -66,7 +69,7 @@ export const ticketBackendRequest = async <T>(
 ): Promise<T> => {
     const appSettings = await getAppSettings();
     const { backendHost, backendRoute, applicationKey, mobileServiceAPIVersion, identifier, clientName } =
-        await getRemoteSettings();
+        await getRemoteConfig(appSettings.remote);
     const compatibleAppVersion = compatibleAppVersions[`${clientName}/${mobileServiceAPIVersion}`];
     const userAgent = `${clientName}/${compatibleAppVersion}/${mobileServiceAPIVersion}/${identifier} (ticket-sofort)`;
 
@@ -128,11 +131,7 @@ export const LoginResponse = z.object({
         }),
     ]),
 });
-export type LoginRequestParams = {
-    email: string;
-    password: string;
-};
-export const loginRequest = async ({ email: username, password }: LoginRequestParams): Promise<string> => {
+export const loginRequest = async ({ username, password }: LoginCredentials): Promise<string> => {
     console.debug('Logging in');
     const response = await ticketBackendRequest(
         'login',

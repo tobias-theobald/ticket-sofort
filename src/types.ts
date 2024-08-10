@@ -1,4 +1,9 @@
+import { getRandomBytes } from 'expo-crypto';
 import { z } from 'zod';
+
+import type { Locales } from './i18n/i18n-types';
+import { locales } from './i18n/i18n-util';
+import { encode } from './util/hashAlgorithms';
 
 export const FullTicket = z.object({
     certificate: z.string(),
@@ -59,26 +64,41 @@ export const TicketTemplateDecoded = z.object({
     }),
 });
 export type TicketTemplateDecoded = z.infer<typeof TicketTemplateDecoded>;
-export type FullTicketDecoded = z.infer<typeof FullTicket> & {
-    metaDecoded: TicketMetaDecoded;
-    templateDecoded: TicketTemplateDecoded;
-};
 
-export type AppSettings = {
-    email: string;
-    password: string;
-    deviceIdentifier: string;
-    accessToken: string | null;
-    availableTickets: Record<string, FullTicketDecoded>;
-    lastTicketSync: string | null;
-    selectedTicketId: string | null;
-};
+export const FullTicketDecoded = FullTicket.extend({
+    metaDecoded: TicketMetaDecoded,
+    templateDecoded: TicketTemplateDecoded,
+});
+export type FullTicketDecoded = z.infer<typeof FullTicketDecoded>;
 
-export type RemoteSettings = {
+export const Remote = z.enum(['saarvv']);
+export type Remote = z.infer<typeof Remote>;
+
+export const AppSettings = z.object({
+    remote: Remote.default(Remote.enum.saarvv),
+    username: z.string().default(''),
+    deviceIdentifier: z.string().default(() => encode(getRandomBytes(20), 'hex')),
+    accessToken: z.string().nullable().default(null),
+    availableTickets: z.record(FullTicketDecoded).default({}),
+    lastTicketSync: z.string().nullable().default(null),
+    selectedTicketId: z.string().nullable().default(null),
+    ticketFetchLocale: z
+        .enum(locales as [Locales, ...Locales[]])
+        .nullable()
+        .default(null),
+});
+export type AppSettings = z.infer<typeof AppSettings>;
+
+export type RemoteConfig = {
     backendHost: string;
     applicationKey: string;
     backendRoute: string;
     clientName: string;
     mobileServiceAPIVersion: string;
     identifier: string;
+};
+
+export type LoginCredentials = {
+    username: string;
+    password: string;
 };

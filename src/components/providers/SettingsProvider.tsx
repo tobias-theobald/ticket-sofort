@@ -3,7 +3,7 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useMemo
 
 import { getAppSettings, resetAppSettings, saveAppSettings } from '../../services/storage';
 import { loginWorkflow, logoutWorkflow, refreshTicketsWorkflow } from '../../services/workflows';
-import type { AppSettings } from '../../types';
+import type { AppSettings, LoginCredentials } from '../../types';
 import { FullPageSpinner } from '../FullPageSpinner';
 
 export type SettingsContext = {
@@ -13,7 +13,7 @@ export type SettingsContext = {
     saveAppSettingsLoading: boolean;
     saveAppSettingsError: string | null;
 
-    doLogin: () => void;
+    doLogin: (credentials: LoginCredentials) => void;
     doLogout: () => void;
     doRefreshTickets: (props: { forceRefresh: boolean }) => void;
     doLoginLoading: boolean;

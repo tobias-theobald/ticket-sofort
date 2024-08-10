@@ -8,7 +8,7 @@ import { loadLocale } from '../i18n/i18n-util.sync';
 
 let globalLL: TranslationFunctions | null = null;
 
-export const getAndLoadLocale = (): Locales => {
+export const getEffectiveLocale = (): Locales => {
     const loadedLocale: string = getLocales()[0].languageCode ?? baseLocale;
     let locale: Locales;
     if (isLocale(loadedLocale)) {
@@ -16,6 +16,11 @@ export const getAndLoadLocale = (): Locales => {
     } else {
         locale = baseLocale;
     }
+    return locale;
+};
+
+export const getAndLoadLocale = (): Locales => {
+    const locale = getEffectiveLocale();
     loadLocale(locale);
     globalLL = i18nObject(locale);
     return locale;

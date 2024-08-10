@@ -9,7 +9,7 @@ import styles from '../constants/styles';
 import { useI18nContext } from '../i18n/i18n-react';
 import type { AppSettings } from '../types';
 
-const CONFIGURABLE_KEYS = ['email', 'password', 'deviceIdentifier', 'selectedTicketId'] as const;
+const CONFIGURABLE_KEYS = ['username', 'deviceIdentifier', 'selectedTicketId'] as const;
 type ConfigurableAppSettings = Pick<AppSettings, (typeof CONFIGURABLE_KEYS)[number]>;
 
 const Settings = () => {
@@ -40,15 +40,16 @@ const Settings = () => {
     );
 
     const [reallyResetAppSettings, setReallyResetAppSettings] = useState(false);
+    const [password, setPassword] = useState('');
 
-    const handleEmailChange = useCallback((newValue: string) => {
-        console.info(`email changed to ${newValue}`);
-        setAppSettings((currentAppSettings) => ({ ...currentAppSettings, email: newValue }));
+    const handleUsernameChange = useCallback((newValue: string) => {
+        console.info(`username changed to ${newValue}`);
+        setAppSettings((currentAppSettings) => ({ ...currentAppSettings, username: newValue }));
     }, []);
 
     const handlePasswordChange = useCallback((newValue: string) => {
         console.info(`password changed to ${newValue}`);
-        setAppSettings((currentAppSettings) => ({ ...currentAppSettings, password: newValue }));
+        setPassword(newValue);
     }, []);
 
     const handleDeviceIdentifierChange = useCallback((newValue: string) => {
@@ -79,9 +80,9 @@ const Settings = () => {
         if (loginStatus === true) {
             doLogout();
         } else {
-            doLogin();
+            doLogin({ username: appSettings.username, password });
         }
-    }, [doLogin, doLogout, loginStatus]);
+    }, [appSettings.username, doLogin, doLogout, loginStatus, password]);
 
     const refreshTicketsButtonPressed = useCallback(() => {
         console.info('refresh tickets button pressed');
@@ -115,18 +116,18 @@ const Settings = () => {
                 <Card.Content>
                     <View style={styles.mediumMarginBottom}>
                         <TextInput
-                            label={LL.settingsScreenAccountEmail()}
+                            label={LL.settingsScreenAccountUsername()}
                             textContentType={'emailAddress'}
                             autoCapitalize={'none'}
-                            value={appSettings.email}
-                            onChangeText={handleEmailChange}
+                            value={appSettings.username}
+                            onChangeText={handleUsernameChange}
                             onBlur={handleBlur}
                         />
                         <TextInput
                             label={LL.settingsScreenAccountPassword()}
                             textContentType={'password'}
                             autoCapitalize={'none'}
-                            value={appSettings.password}
+                            value={password}
                             onChangeText={handlePasswordChange}
                             onBlur={handleBlur}
                             secureTextEntry
