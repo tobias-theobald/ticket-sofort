@@ -16,7 +16,7 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#4755b6"
     },
     "platforms": [
       "ios",
@@ -32,8 +32,8 @@
     "android": {
       "package": "dev.ticketsofort.android",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/adaptive-icon/foreground.png",
+        "backgroundColor": "#4755b6"
       },
       "blockedPermissions": [
         "android.permission.SYSTEM_ALERT_WINDOW",
