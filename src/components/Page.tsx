@@ -16,6 +16,7 @@ type PressableProps = {
      * This can be useful for differentiating between scrolling and pressing.
      */
     pressDistanceThreshold?: number;
+    pressDurationThreshold?: number;
 };
 
 export function Page({ children }: PropsWithChildren) {
@@ -42,14 +43,19 @@ export function CenterPage({ children }: PropsWithChildren) {
     );
 }
 
-export function PageNoScroll({ children, onPress, pressDistanceThreshold = 10 }: PropsWithChildren<PressableProps>) {
-    const [pressInCoordinates, setPressInCoordinates] = useState<{ x: number; y: number } | null>(null);
+export function PageNoScroll({
+    children,
+    onPress,
+    pressDistanceThreshold = 10,
+    pressDurationThreshold = 1000,
+}: PropsWithChildren<PressableProps>) {
+    const [pressInCoordinates, setPressInCoordinates] = useState<{ x: number; y: number; time: number } | null>(null);
     const onPressIn = useCallback(
         (event: GestureResponderEvent) => {
             if (onPress === undefined) {
                 return;
             }
-            setPressInCoordinates({ x: event.nativeEvent.pageX, y: event.nativeEvent.pageY });
+            setPressInCoordinates({ x: event.nativeEvent.pageX, y: event.nativeEvent.pageY, time: Date.now() });
         },
         [onPress],
     );
@@ -60,18 +66,19 @@ export function PageNoScroll({ children, onPress, pressDistanceThreshold = 10 }:
                 return;
             }
             if (pressInCoordinates === null) {
-                // what?
+                // what? how?
                 return;
             }
             const pressOutCoordinates = { x: event.nativeEvent.pageX, y: event.nativeEvent.pageY };
             if (
                 Math.abs(pressInCoordinates.x - pressOutCoordinates.x) < pressDistanceThreshold &&
-                Math.abs(pressInCoordinates.y - pressOutCoordinates.y) < pressDistanceThreshold
+                Math.abs(pressInCoordinates.y - pressOutCoordinates.y) < pressDistanceThreshold &&
+                Date.now() - pressInCoordinates.time < pressDurationThreshold
             ) {
                 onPress();
             }
         },
-        [onPress, pressDistanceThreshold, pressInCoordinates],
+        [onPress, pressDistanceThreshold, pressDurationThreshold, pressInCoordinates],
     );
 
     const content = (
