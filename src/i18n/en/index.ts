@@ -10,9 +10,10 @@ const en = {
     ticketScreenGoToSettings: 'Go to settings',
     ticketScreenNotLoggedIn: 'Please log in to show tickets',
 
+    settingsScreenLoggedInMessage: 'Logged in to {remote:string} as {username:string}',
     settingsScreenLoggedIn: 'Logged In',
     settingsScreenLoggedOut: 'Logged Out',
-    settingsScreenAccountTitle: 'SaarVV Account',
+    settingsScreenAccountTitle: 'Account',
     settingsScreenAccountUsername: 'E-Mail',
     settingsScreenAccountPassword: 'Password',
     settingsScreenAccountStatus: 'Status',
@@ -30,6 +31,7 @@ const en = {
     settingsScreenExpertDeviceId: 'Device ID',
     settingsScreenExpertReset: 'Reset App Settings',
     settingsScreenExpertReallyReset: 'Really reset app settings?',
+    settingsScreenExpertShow: 'Show',
 
     requestError: 'Request failed',
     requestResponseSchemaError: 'Response does not match expected schema',

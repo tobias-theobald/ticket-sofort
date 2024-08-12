@@ -43,6 +43,12 @@ type RootTranslation = {
 	 */
 	ticketScreenNotLoggedIn: string
 	/**
+	 * L​o​g​g​e​d​ ​i​n​ ​t​o​ ​{​r​e​m​o​t​e​}​ ​a​s​ ​{​u​s​e​r​n​a​m​e​}
+	 * @param {string} remote
+	 * @param {string} username
+	 */
+	settingsScreenLoggedInMessage: RequiredParams<'remote' | 'username'>
+	/**
 	 * L​o​g​g​e​d​ ​I​n
 	 */
 	settingsScreenLoggedIn: string
@@ -51,7 +57,7 @@ type RootTranslation = {
 	 */
 	settingsScreenLoggedOut: string
 	/**
-	 * S​a​a​r​V​V​ ​A​c​c​o​u​n​t
+	 * A​c​c​o​u​n​t
 	 */
 	settingsScreenAccountTitle: string
 	/**
@@ -125,6 +131,10 @@ type RootTranslation = {
 	 */
 	settingsScreenExpertReallyReset: string
 	/**
+	 * S​h​o​w
+	 */
+	settingsScreenExpertShow: string
+	/**
 	 * R​e​q​u​e​s​t​ ​f​a​i​l​e​d
 	 */
 	requestError: string
@@ -184,6 +194,10 @@ export type TranslationFunctions = {
 	 */
 	ticketScreenNotLoggedIn: () => LocalizedString
 	/**
+	 * Logged in to {remote} as {username}
+	 */
+	settingsScreenLoggedInMessage: (arg: { remote: string, username: string }) => LocalizedString
+	/**
 	 * Logged In
 	 */
 	settingsScreenLoggedIn: () => LocalizedString
@@ -192,7 +206,7 @@ export type TranslationFunctions = {
 	 */
 	settingsScreenLoggedOut: () => LocalizedString
 	/**
-	 * SaarVV Account
+	 * Account
 	 */
 	settingsScreenAccountTitle: () => LocalizedString
 	/**
@@ -263,6 +277,10 @@ export type TranslationFunctions = {
 	 * Really reset app settings?
 	 */
 	settingsScreenExpertReallyReset: () => LocalizedString
+	/**
+	 * Show
+	 */
+	settingsScreenExpertShow: () => LocalizedString
 	/**
 	 * Request failed
 	 */

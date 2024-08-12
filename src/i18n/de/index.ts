@@ -10,9 +10,10 @@ const de = {
     ticketScreenGoToSettings: 'Zu den Einstellungen',
     ticketScreenNotLoggedIn: 'Bitte logge dich ein, um Tickets anzuzeigen',
 
+    settingsScreenLoggedInMessage: 'Eingeloggt bei {remote} als {username}',
     settingsScreenLoggedIn: 'Eingeloggt',
     settingsScreenLoggedOut: 'Ausgeloggt',
-    settingsScreenAccountTitle: 'SaarVV Konto',
+    settingsScreenAccountTitle: 'Konto',
     settingsScreenAccountUsername: 'E-Mail',
     settingsScreenAccountPassword: 'Passwort',
     settingsScreenAccountStatus: 'Status',
@@ -30,6 +31,7 @@ const de = {
     settingsScreenExpertDeviceId: 'Device ID',
     settingsScreenExpertReset: 'App-Einstellungen zurücksetzen',
     settingsScreenExpertReallyReset: 'App-Einstellungen wirklich zurücksetzen?',
+    settingsScreenExpertShow: 'Anzeigen',
 
     requestError: 'Server-Anfrage fehlgeschlagen',
     requestResponseSchemaError: 'Server-Antwort entspricht nicht dem erwarteten Schema',

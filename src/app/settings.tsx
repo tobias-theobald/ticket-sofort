@@ -1,16 +1,17 @@
 import { router } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { Fragment, useCallback, useState } from 'react';
 import { View } from 'react-native';
-import { Button, Card, HelperText, IconButton, List, Text, TextInput } from 'react-native-paper';
+import { Button, Card, Divider, HelperText, IconButton, List, Text, TextInput } from 'react-native-paper';
 
 import { Page } from '../components/Page';
 import { useSettings } from '../components/providers/SettingsProvider';
 import styles from '../constants/styles';
 import { useI18nContext } from '../i18n/i18n-react';
-import type { AppSettings } from '../types';
+import { type AppSettings, remoteDisplayName } from '../types';
 
 const CONFIGURABLE_KEYS = ['username', 'deviceIdentifier', 'selectedTicketId'] as const;
 type ConfigurableAppSettings = Pick<AppSettings, (typeof CONFIGURABLE_KEYS)[number]>;
+const singleCharRegex = /./g;
 
 const Settings = () => {
     const { LL } = useI18nContext();
@@ -42,13 +43,15 @@ const Settings = () => {
     const [reallyResetAppSettings, setReallyResetAppSettings] = useState(false);
     const [password, setPassword] = useState('');
 
+    const [showExpertSettings, setShowExpertSettings] = useState(false);
+
     const handleUsernameChange = useCallback((newValue: string) => {
         console.info(`username changed to ${newValue}`);
         setAppSettings((currentAppSettings) => ({ ...currentAppSettings, username: newValue }));
     }, []);
 
     const handlePasswordChange = useCallback((newValue: string) => {
-        console.info(`password changed to ${newValue}`);
+        console.info(`password changed to ${newValue.replaceAll(singleCharRegex, '*')}`);
         setPassword(newValue);
     }, []);
 
@@ -100,6 +103,10 @@ const Settings = () => {
         router.navigate('/');
     }, [doResetAppSettings, reallyResetAppSettings]);
 
+    const handleShowExpertSettings = useCallback(() => {
+        setShowExpertSettings(true);
+    }, []);
+
     let loginStatusString;
     if (typeof loginStatus === 'string') {
         loginStatusString = loginStatus;
@@ -109,35 +116,92 @@ const Settings = () => {
         loginStatusString = LL.settingsScreenLoggedOut();
     }
 
+    let loginFormComponent;
+    if (loginStatus !== true) {
+        loginFormComponent = (
+            <>
+                <View style={styles.mediumMarginBottom}>
+                    <TextInput
+                        label={LL.settingsScreenAccountUsername()}
+                        textContentType={'emailAddress'}
+                        autoCapitalize={'none'}
+                        value={appSettings.username}
+                        onChangeText={handleUsernameChange}
+                        onBlur={handleBlur}
+                    />
+                    <TextInput
+                        label={LL.settingsScreenAccountPassword()}
+                        textContentType={'password'}
+                        autoCapitalize={'none'}
+                        value={password}
+                        onChangeText={handlePasswordChange}
+                        onBlur={handleBlur}
+                        secureTextEntry
+                    />
+                </View>
+                {saveAppSettingsError && <HelperText type="error">{saveAppSettingsError}</HelperText>}
+                <Text>
+                    {LL.settingsScreenAccountStatus()}: {loginStatusString}
+                </Text>
+            </>
+        );
+    } else {
+        loginFormComponent = (
+            <Text>
+                {LL.settingsScreenLoggedInMessage({
+                    remote: remoteDisplayName[initialAppSettings.remote],
+                    username: initialAppSettings.username,
+                })}
+            </Text>
+        );
+    }
+
+    let ticketsComponentContent;
+    if (loginStatus === true) {
+        ticketsComponentContent = (
+            <>
+                <Text>
+                    {LL.settingsScreenTicketsAvailable()}: {Object.keys(initialAppSettings.availableTickets).length}
+                </Text>
+                <List.Item
+                    title={LL.settingsScreenTicketsAutomaticTitle()}
+                    description={LL.settingsScreenTicketsAutomaticDescription()}
+                    right={
+                        appSettings.selectedTicketId === null
+                            ? (props) => <List.Icon {...props} icon="check" />
+                            : undefined
+                    }
+                    onPress={() => handleSelectedTicketChanged(null)}
+                />
+                {Object.entries(initialAppSettings.availableTickets).map(([id, ticket], i) => (
+                    <Fragment key={id}>
+                        {i > 0 && <Divider />}
+                        <List.Item
+                            title={`${ticket.metaDecoded.title}`}
+                            description={LL.settingsScreenTicketsValidity({
+                                validFrom: ticket.metaDecoded.validity_begin,
+                                validTo: ticket.metaDecoded.validity_end,
+                            })}
+                            right={
+                                appSettings.selectedTicketId === id
+                                    ? (props) => <List.Icon {...props} icon="check" />
+                                    : undefined
+                            }
+                            onPress={() => handleSelectedTicketChanged(id)}
+                        />
+                    </Fragment>
+                ))}
+            </>
+        );
+    } else {
+        ticketsComponentContent = <Text>{LL.ticketScreenNotLoggedIn()}</Text>;
+    }
+
     return (
         <Page>
             <Card style={styles.mediumMarginBottom}>
                 <Card.Title title={LL.settingsScreenAccountTitle()} />
-                <Card.Content>
-                    <View style={styles.mediumMarginBottom}>
-                        <TextInput
-                            label={LL.settingsScreenAccountUsername()}
-                            textContentType={'emailAddress'}
-                            autoCapitalize={'none'}
-                            value={appSettings.username}
-                            onChangeText={handleUsernameChange}
-                            onBlur={handleBlur}
-                        />
-                        <TextInput
-                            label={LL.settingsScreenAccountPassword()}
-                            textContentType={'password'}
-                            autoCapitalize={'none'}
-                            value={password}
-                            onChangeText={handlePasswordChange}
-                            onBlur={handleBlur}
-                            secureTextEntry
-                        />
-                    </View>
-                    {saveAppSettingsError && <HelperText type="error">{saveAppSettingsError}</HelperText>}
-                    <Text>
-                        {LL.settingsScreenAccountStatus()}: {loginStatusString}
-                    </Text>
-                </Card.Content>
+                <Card.Content>{loginFormComponent}</Card.Content>
                 <Card.Actions>
                     {doLoginLoading ? (
                         <IconButton
@@ -155,37 +219,7 @@ const Settings = () => {
             </Card>
             <Card style={styles.mediumMarginBottom}>
                 <Card.Title title={LL.settingsScreenTicketsTitle()} />
-                <Card.Content>
-                    <Text>
-                        {LL.settingsScreenTicketsAvailable()}: {Object.keys(initialAppSettings.availableTickets).length}
-                    </Text>
-                    <List.Item
-                        title={LL.settingsScreenTicketsAutomaticTitle()}
-                        description={LL.settingsScreenTicketsAutomaticDescription()}
-                        right={
-                            appSettings.selectedTicketId === null
-                                ? (props) => <List.Icon {...props} icon="check" />
-                                : undefined
-                        }
-                        onPress={() => handleSelectedTicketChanged(null)}
-                    />
-                    {Object.entries(initialAppSettings.availableTickets).map(([id, ticket]) => (
-                        <List.Item
-                            key={id}
-                            title={`${ticket.metaDecoded.title} (${id})`}
-                            description={LL.settingsScreenTicketsValidity({
-                                validFrom: ticket.metaDecoded.validity_begin,
-                                validTo: ticket.metaDecoded.validity_end,
-                            })}
-                            right={
-                                appSettings.selectedTicketId === id
-                                    ? (props) => <List.Icon {...props} icon="check" />
-                                    : undefined
-                            }
-                            onPress={() => handleSelectedTicketChanged(id)}
-                        />
-                    ))}
-                </Card.Content>
+                <Card.Content>{ticketsComponentContent}</Card.Content>
                 <Card.Actions>
                     {doLoginLoading ? (
                         <IconButton
@@ -195,24 +229,34 @@ const Settings = () => {
                             accessibilityLabel={LL.settingsScreenTicketsRefreshing()}
                         />
                     ) : (
-                        <Button onPress={refreshTicketsButtonPressed}>{LL.settingsScreenTicketsRefresh()}</Button>
+                        <Button onPress={refreshTicketsButtonPressed} disabled={loginStatus !== true}>
+                            {LL.settingsScreenTicketsRefresh()}
+                        </Button>
                     )}
                 </Card.Actions>
             </Card>
             <Card>
                 <Card.Title title={LL.settingsScreenExpertTitle()} />
                 <Card.Content>
-                    <TextInput
-                        label={LL.settingsScreenExpertDeviceId()}
-                        value={appSettings.deviceIdentifier}
-                        onChangeText={handleDeviceIdentifierChange}
-                        onBlur={handleBlur}
-                    />
+                    {showExpertSettings && (
+                        <TextInput
+                            label={LL.settingsScreenExpertDeviceId()}
+                            value={appSettings.deviceIdentifier}
+                            onChangeText={handleDeviceIdentifierChange}
+                            onBlur={handleBlur}
+                        />
+                    )}
                 </Card.Content>
                 <Card.Actions>
-                    <Button onPress={handleResetAppSettings}>
-                        {reallyResetAppSettings ? LL.settingsScreenExpertReallyReset() : LL.settingsScreenExpertReset()}
-                    </Button>
+                    {showExpertSettings ? (
+                        <Button onPress={handleResetAppSettings}>
+                            {reallyResetAppSettings
+                                ? LL.settingsScreenExpertReallyReset()
+                                : LL.settingsScreenExpertReset()}
+                        </Button>
+                    ) : (
+                        <Button onPress={handleShowExpertSettings}>{LL.settingsScreenExpertShow()}</Button>
+                    )}
                 </Card.Actions>
             </Card>
         </Page>

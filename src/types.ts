@@ -74,6 +74,10 @@ export type FullTicketDecoded = z.infer<typeof FullTicketDecoded>;
 export const Remote = z.enum(['saarvv']);
 export type Remote = z.infer<typeof Remote>;
 
+export const remoteDisplayName: Record<Remote, string> = {
+    [Remote.enum.saarvv]: 'SaarVV',
+};
+
 export const AppSettings = z.object({
     remote: Remote.default(Remote.enum.saarvv),
     username: z.string().default(''),
