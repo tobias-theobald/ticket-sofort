@@ -65,12 +65,6 @@ TicketSofort uses Expo's EAS build service to create builds for both iOS and And
 
 ## To-Do
 
-### MVP
-- [x] Data-saving refresh mechanism. Don't load the whole ticket if it's already loaded, etc.
-- [x] Tap to set brightness to 100%
-- [x] Multi-language support
-
-### Post-MVP
 - [ ] Implement settings encryption and (optionally) user authentication.
 - [ ] Add support for more public transport companies.
 - [ ] Add unit and integration tests. lol.

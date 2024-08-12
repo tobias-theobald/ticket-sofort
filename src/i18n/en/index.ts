@@ -17,7 +17,7 @@ const en = {
     settingsScreenAccountUsername: 'E-Mail',
     settingsScreenAccountPassword: 'Password',
     settingsScreenAccountStatus: 'Status',
-    settingsScreenAccountLogin: 'Log In',
+    settingsScreenAccountLogin: 'Log In to {remote:string}',
     settingsScreenAccountLogout: 'Log Out',
     settingsScreenAccountA11yLoggingIn: 'logging in or refreshing tickets',
     settingsScreenTicketsTitle: 'Tickets',

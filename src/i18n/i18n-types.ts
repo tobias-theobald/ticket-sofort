@@ -73,9 +73,10 @@ type RootTranslation = {
 	 */
 	settingsScreenAccountStatus: string
 	/**
-	 * L​o​g​ ​I​n
+	 * L​o​g​ ​I​n​ ​t​o​ ​{​r​e​m​o​t​e​}
+	 * @param {string} remote
 	 */
-	settingsScreenAccountLogin: string
+	settingsScreenAccountLogin: RequiredParams<'remote'>
 	/**
 	 * L​o​g​ ​O​u​t
 	 */
@@ -222,9 +223,9 @@ export type TranslationFunctions = {
 	 */
 	settingsScreenAccountStatus: () => LocalizedString
 	/**
-	 * Log In
+	 * Log In to {remote}
 	 */
-	settingsScreenAccountLogin: () => LocalizedString
+	settingsScreenAccountLogin: (arg: { remote: string }) => LocalizedString
 	/**
 	 * Log Out
 	 */

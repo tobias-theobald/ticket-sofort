@@ -17,7 +17,7 @@ const de = {
     settingsScreenAccountUsername: 'E-Mail',
     settingsScreenAccountPassword: 'Passwort',
     settingsScreenAccountStatus: 'Status',
-    settingsScreenAccountLogin: 'Einloggen',
+    settingsScreenAccountLogin: 'Bei {remote} einloggen',
     settingsScreenAccountLogout: 'Ausloggen',
     settingsScreenAccountA11yLoggingIn: 'melde dich gerade an oder aktualisiere Tickets',
     settingsScreenTicketsTitle: 'Tickets',

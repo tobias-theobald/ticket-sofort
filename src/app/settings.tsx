@@ -128,6 +128,7 @@ const Settings = () => {
                         value={appSettings.username}
                         onChangeText={handleUsernameChange}
                         onBlur={handleBlur}
+                        disabled={doLoginLoading}
                     />
                     <TextInput
                         label={LL.settingsScreenAccountPassword()}
@@ -137,6 +138,7 @@ const Settings = () => {
                         onChangeText={handlePasswordChange}
                         onBlur={handleBlur}
                         secureTextEntry
+                        disabled={doLoginLoading}
                     />
                 </View>
                 {saveAppSettingsError && <HelperText type="error">{saveAppSettingsError}</HelperText>}
@@ -212,7 +214,11 @@ const Settings = () => {
                         />
                     ) : (
                         <Button onPress={loginButtonPressed}>
-                            {loginStatus === true ? LL.settingsScreenAccountLogout() : LL.settingsScreenAccountLogin()}
+                            {loginStatus === true
+                                ? LL.settingsScreenAccountLogout()
+                                : LL.settingsScreenAccountLogin({
+                                      remote: remoteDisplayName[initialAppSettings.remote],
+                                  })}
                         </Button>
                     )}
                 </Card.Actions>
