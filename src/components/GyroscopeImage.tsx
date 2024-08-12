@@ -39,7 +39,7 @@ export const GyroscopeImage = ({ image }: GyroscopeImageProps) => {
         getOrientationAsync()
             .then((orientationInfo) => {
                 setOrientation((currentOrientation) => {
-                    console.debug('Initial orientation:', { currentOrientation, orientationInfo });
+                    // console.debug('Initial orientation:', { currentOrientation, orientationInfo });
                     if (currentOrientation !== Orientation.UNKNOWN) {
                         return currentOrientation;
                     } else {
@@ -83,7 +83,7 @@ export const GyroscopeImage = ({ image }: GyroscopeImageProps) => {
                 currentDimensions.width !== roundedWidth ||
                 currentDimensions.height !== roundedHeight
             ) {
-                console.debug('Dimensions changed:', { width, height });
+                // console.debug('Dimensions changed:', { width, height });
                 return { width: roundedWidth, height: roundedHeight };
             } else {
                 return currentDimensions;
