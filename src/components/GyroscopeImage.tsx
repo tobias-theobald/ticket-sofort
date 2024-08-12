@@ -1,4 +1,5 @@
-import { DeviceMotion, type DeviceMotionMeasurement, DeviceMotionOrientation } from 'expo-sensors';
+import { addOrientationChangeListener, Orientation } from 'expo-screen-orientation';
+import { DeviceMotion, type DeviceMotionMeasurement } from 'expo-sensors';
 import { useEffect, useState } from 'react';
 import { Image, type LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -14,38 +15,43 @@ const SENSOR_UPDATE_INTERVAL_MS = 200; // See the restriction on Android in the 
 const DEAD_ZONE = 0.1;
 const MAX_ROTATION = 1;
 
-const relevantRotationByOrientation = (deviceMotionMeasurement: DeviceMotionMeasurement) => {
-    switch (deviceMotionMeasurement.orientation) {
-        case DeviceMotionOrientation.Portrait:
+const relevantRotationByOrientation = (deviceMotionMeasurement: DeviceMotionMeasurement, orientation: Orientation) => {
+    switch (orientation) {
+        case Orientation.UNKNOWN:
+        case Orientation.PORTRAIT_UP:
             return -deviceMotionMeasurement.rotation.gamma;
-        case DeviceMotionOrientation.UpsideDown:
+        case Orientation.PORTRAIT_DOWN:
             return deviceMotionMeasurement.rotation.gamma;
-        case DeviceMotionOrientation.LeftLandscape:
+        case Orientation.LANDSCAPE_LEFT:
             return -deviceMotionMeasurement.rotation.beta;
-        case DeviceMotionOrientation.RightLandscape:
+        case Orientation.LANDSCAPE_RIGHT:
             return deviceMotionMeasurement.rotation.beta;
     }
 };
 
 export const GyroscopeImage = ({ image }: GyroscopeImageProps) => {
     const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
-
+    const [orientation, setOrientation] = useState<Orientation>(Orientation.UNKNOWN);
     const [relativeRotation, setRelativeRotation] = useState<number>(0);
 
     useEffect(() => {
         DeviceMotion.setUpdateInterval(SENSOR_UPDATE_INTERVAL_MS);
-        const subscription = DeviceMotion.addListener((deviceMotionMeasurementData) => {
-            const rotationByOrientation = relevantRotationByOrientation(deviceMotionMeasurementData);
+        const deviceMotionSubscription = DeviceMotion.addListener((deviceMotionMeasurementData) => {
+            const rotationByOrientation = relevantRotationByOrientation(deviceMotionMeasurementData, orientation);
             const isNegative = rotationByOrientation < 0;
             const absRotation = Math.abs(rotationByOrientation);
             const relativeRotation =
                 absRotation > DEAD_ZONE ? Math.min(absRotation - DEAD_ZONE, MAX_ROTATION) / MAX_ROTATION : 0;
             setRelativeRotation(relativeRotation * (isNegative ? -1 : 1));
         });
+        const screenOrientationSubscription = addOrientationChangeListener((orientationChangeEvent) => {
+            setOrientation(orientationChangeEvent.orientationInfo.orientation);
+        });
         return () => {
-            DeviceMotion.removeSubscription(subscription);
+            DeviceMotion.removeSubscription(deviceMotionSubscription);
+            screenOrientationSubscription.remove();
         };
-    }, []);
+    }, [orientation]);
 
     const onLayout = (event: LayoutChangeEvent) => {
         const { width, height } = event.nativeEvent.layout;

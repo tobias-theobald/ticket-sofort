@@ -44,7 +44,13 @@
         "motionPermission": false
       }
     ],
-    "expo-localization"
+    "expo-localization",
+    [
+      "expo-screen-orientation",
+      {
+        "initialOrientation": "DEFAULT"
+      }
+    ]
   ],
   "experiments": {
     "typedRoutes": true

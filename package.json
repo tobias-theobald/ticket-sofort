@@ -36,6 +36,7 @@
     "expo-linking": "~6.3.1",
     "expo-localization": "~15.0.3",
     "expo-router": "~3.5.21",
+    "expo-screen-orientation": "~7.0.5",
     "expo-sensors": "13.1.0-canary-20240719-83ee47b",
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
