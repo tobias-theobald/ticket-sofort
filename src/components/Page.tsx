@@ -1,8 +1,21 @@
-import type { PropsWithChildren } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { type PropsWithChildren, useCallback, useState } from 'react';
+import {
+    type GestureResponderEvent,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    TouchableWithoutFeedback,
+    View,
+} from 'react-native';
 
 type PressableProps = {
     onPress?: () => void;
+
+    /**
+     * The distance in pixels a touch start event can be from the touch end event for the touch event to count as a press.
+     * This can be useful for differentiating between scrolling and pressing.
+     */
+    pressDistanceThreshold?: number;
 };
 
 export function Page({ children }: PropsWithChildren) {
@@ -29,18 +42,53 @@ export function CenterPage({ children }: PropsWithChildren) {
     );
 }
 
-export function PageNoScroll({ children, onPress }: PropsWithChildren<PressableProps>) {
+export function PageNoScroll({ children, onPress, pressDistanceThreshold = 10 }: PropsWithChildren<PressableProps>) {
+    const [pressInCoordinates, setPressInCoordinates] = useState<{ x: number; y: number } | null>(null);
+    const onPressIn = useCallback(
+        (event: GestureResponderEvent) => {
+            if (onPress === undefined) {
+                return;
+            }
+            setPressInCoordinates({ x: event.nativeEvent.pageX, y: event.nativeEvent.pageY });
+        },
+        [onPress],
+    );
+    const onPressOut = useCallback(
+        (event: GestureResponderEvent) => {
+            setPressInCoordinates(null);
+            if (onPress === undefined) {
+                return;
+            }
+            if (pressInCoordinates === null) {
+                // what?
+                return;
+            }
+            const pressOutCoordinates = { x: event.nativeEvent.pageX, y: event.nativeEvent.pageY };
+            if (
+                Math.abs(pressInCoordinates.x - pressOutCoordinates.x) < pressDistanceThreshold &&
+                Math.abs(pressInCoordinates.y - pressOutCoordinates.y) < pressDistanceThreshold
+            ) {
+                onPress();
+            }
+        },
+        [onPress, pressDistanceThreshold, pressInCoordinates],
+    );
+
     const content = (
         <SafeAreaView style={styles.container}>
             <View style={styles.page}>{children}</View>
         </SafeAreaView>
     );
+
     if (!onPress) {
         return content;
     }
-    return <TouchableWithoutFeedback onPress={onPress}>{content}</TouchableWithoutFeedback>;
+    return (
+        <TouchableWithoutFeedback onPressIn={onPressIn} onPressOut={onPressOut}>
+            {content}
+        </TouchableWithoutFeedback>
+    );
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
