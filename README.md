@@ -80,6 +80,16 @@ TicketSofort uses Expo's EAS build service to create builds for both iOS and And
 
 - Purchasing tickets through the app or route-finding. The DB app is very good at those things.
 
+## Known Issues
+
+### `expo doctor` reports issues with dependency versions
+
+We are using a prerelease version of `expo-sensors` to avoid having to ask for the "Motion" permission on iOS which we don't need but a fix for which is only just being tested.
+
+### Upside-down portrait mode on iOS will show wrong gyro logo location
+
+The problem is that expo-screen-orientation doesn't correctly report the upside down portrait orientation on iOS. This has been a [known issue in the library](https://github.com/expo/expo/issues/10944) but I doubt it will be addressed very soon. If there is a workaround, I'd be happy to hear it. But since this likely only affects iPad users and I have never actually had to prove the functioning of the gyro logo, I'm not too worried about it.   
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

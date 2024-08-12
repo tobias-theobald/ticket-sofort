@@ -1,62 +1,71 @@
 {
-  "name": "TicketSofort",
-  "slug": "ticketsofort",
-  "version": "1.0.0",
-  "extra": {
-    "eas": {
-      "projectId": "379d81d4-874b-47f5-9674-fd1875c486f4"
-    }
-  },
-  "jsEngine": "hermes",
-  "orientation": "portrait",
-  "icon": "./assets/images/icon.png",
-  "scheme": "ticketsofort",
-  "userInterfaceStyle": "automatic",
-  "splash": {
-    "image": "./assets/images/splash.png",
-    "resizeMode": "contain",
-    "backgroundColor": "#ffffff"
-  },
-  "platforms": [
-    "ios",
-    "android"
-  ],
-  "ios": {
-    "bundleIdentifier": "dev.ticketsofort.ios",
-    "supportsTablet": true,
-    "infoPlist": {
-      "CFBundleAllowMixedLocalizations": true
-    }
-  },
-  "android": {
-    "package": "dev.ticketsofort.android",
-    "adaptiveIcon": {
-      "foregroundImage": "./assets/images/adaptive-icon.png",
+  "expo": {
+    "name": "TicketSofort",
+    "slug": "ticketsofort",
+    "version": "1.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "379d81d4-874b-47f5-9674-fd1875c486f4"
+      }
+    },
+    "jsEngine": "hermes",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "ticketsofort",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "blockedPermissions": ["android.permission.SYSTEM_ALERT_WINDOW", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.ACTIVITY_RECOGNITION", "android.permission.VIBRATE", "android.permission.WRITE_SETTINGS"]
-  },
-  "plugins": [
-    "expo-router",
-    [
-      "expo-sensors",
-      {
-        "motionPermission": false
-      }
+    "platforms": [
+      "ios",
+      "android"
     ],
-    "expo-localization",
-    [
-      "expo-screen-orientation",
-      {
-        "initialOrientation": "DEFAULT"
+    "ios": {
+      "bundleIdentifier": "dev.ticketsofort.ios",
+      "supportsTablet": true,
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true
       }
-    ]
-  ],
-  "experiments": {
-    "typedRoutes": true
-  },
-  "locales": {
-    "en": "./i18n-meta/en.json",
-    "de": "./i18n-meta/de.json"
+    },
+    "android": {
+      "package": "dev.ticketsofort.android",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "blockedPermissions": [
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACTIVITY_RECOGNITION",
+        "android.permission.VIBRATE",
+        "android.permission.WRITE_SETTINGS"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-sensors",
+        {
+          "motionPermission": false
+        }
+      ],
+      "expo-localization",
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "locales": {
+      "en": "./i18n-meta/en.json",
+      "de": "./i18n-meta/de.json"
+    }
   }
 }
