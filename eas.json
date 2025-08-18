@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": ">= 10.2.2",
+    "version": ">= 16.17.4",
     "requireCommit": false
   },
   "build": {

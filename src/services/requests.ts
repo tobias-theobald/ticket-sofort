@@ -71,7 +71,7 @@ export const ticketBackendRequest = async <T>(
     const { backendHost, backendRoute, applicationKey, mobileServiceAPIVersion, identifier, clientName } =
         await getRemoteConfig(appSettings.remote);
     const compatibleAppVersion = compatibleAppVersions[`${clientName}/${mobileServiceAPIVersion}`];
-    const userAgent = `${clientName}/${compatibleAppVersion}/${mobileServiceAPIVersion}/${identifier} (ticket-sofort)`;
+    const userAgent = `${clientName}/${compatibleAppVersion}/${mobileServiceAPIVersion}/${identifier} (ticket-sofort https://github.com/tobias-theobald/ticket-sofort)`;
 
     const headers = new Headers({
         [CONTENT_TYPE_KEY]: CONTENT_TYPE_DEFAULT,

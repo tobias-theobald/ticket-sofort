@@ -1,3 +1,4 @@
 {
-  "CFBundleDisplayName": "TicketSofort"
+  "CFBundleDisplayName": "TicketSofort",
+  "NSMotionUsageDescription": "TicketSofort requires access to your device's motion sensors to display security features of the ticket."
 }

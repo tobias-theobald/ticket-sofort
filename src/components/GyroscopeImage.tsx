@@ -52,6 +52,7 @@ export const GyroscopeImage = ({ image }: GyroscopeImageProps) => {
             });
         DeviceMotion.setUpdateInterval(SENSOR_UPDATE_INTERVAL_MS);
         const deviceMotionSubscription = DeviceMotion.addListener((deviceMotionMeasurementData) => {
+            // console.debug('Device motion measurement data:', deviceMotionMeasurementData);
             const rotationByOrientation = relevantRotationByOrientation(deviceMotionMeasurementData, orientation);
             // console.debug('Rotation by orientation:', rotationByOrientation);
             const isNegative = rotationByOrientation < 0;

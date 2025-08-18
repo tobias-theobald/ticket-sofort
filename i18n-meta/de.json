@@ -1,3 +1,4 @@
 {
-  "CFBundleDisplayName": "TicketSofort"
+  "CFBundleDisplayName": "TicketSofort",
+  "NSMotionUsageDescription": "TicketSofort benötigt Zugriff auf die Bewegungssensoren deines Geräts, um Sicherheitsmerkmale des Tickets anzuzeigen.",
 }

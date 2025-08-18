@@ -47,12 +47,6 @@
     },
     "plugins": [
       "expo-router",
-      [
-        "expo-sensors",
-        {
-          "motionPermission": false
-        }
-      ],
       "expo-localization",
       [
         "expo-screen-orientation",

@@ -86,7 +86,7 @@ export function RootLayout() {
                     title: LL.screenHeaderSettings(),
                     presentation: 'modal',
                     headerRight: () => (
-                        <Link asChild href="/">
+                        <Link asChild href="/" dismissTo>
                             <IconButton
                                 icon="close"
                                 size={NAVBAR_ICON_SIZE}
