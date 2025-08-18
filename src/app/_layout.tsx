@@ -4,16 +4,16 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AppState, useColorScheme } from 'react-native';
 import { IconButton, PaperProvider } from 'react-native-paper';
 
-import { ReactQueryClientProvider } from '../components/providers/ReactQueryClientProvider';
-import { SettingsProvider, useSettings } from '../components/providers/SettingsProvider';
+import { ReactQueryClientProvider } from '@/components/providers/ReactQueryClientProvider';
+import { SettingsProvider, useSettings } from '@/components/providers/SettingsProvider';
 import {
     ModifiedReactNativePaperDarkTheme,
     ModifiedReactNativePaperLightTheme,
     ModifiedReactNavigationDarkTheme,
     ModifiedReactNavigationLightTheme,
-} from '../constants/themes';
-import TypesafeI18n, { useI18nContext } from '../i18n/i18n-react';
-import { getAndLoadLocale, getEffectiveLocale } from '../util/getAndLoadLocale';
+} from '@/constants/themes';
+import TypesafeI18n, { useI18nContext } from '@/i18n/i18n-react';
+import { getAndLoadLocale, getEffectiveLocale } from '@/util/getAndLoadLocale';
 
 export const NAVBAR_ICON_SIZE = 24;
 const TICKET_REFRESH_INTERVAL = 12 * 60 * 60 * 1000;

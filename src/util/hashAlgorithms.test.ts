@@ -18,8 +18,8 @@ describe('parseEncoded', () => {
         expect(parseEncoded(input, encoding)).toEqual(expectedOutput);
     });
 
-    it('should correctly parse an ArrayBuffer', () => {
-        const input = new Uint8Array([104, 101, 108, 108, 111]).buffer;
+    it('should correctly parse a Uint8Array', () => {
+        const input = new Uint8Array([104, 101, 108, 108, 111]);
         const encoding = 'raw';
         const expectedOutput = new Uint8Array([104, 101, 108, 108, 111]);
         expect(parseEncoded(input, encoding)).toEqual(expectedOutput);
@@ -41,14 +41,14 @@ describe('parseEncoded', () => {
 });
 
 describe('encode', () => {
-    it('should correctly encode an ArrayBuffer to hex string', () => {
+    it('should correctly encode a Uint8Array to hex string', () => {
         const input = new Uint8Array([104, 101, 108, 108, 111]);
         const encoding = 'hex';
         const expectedOutput = '68656c6c6f';
         expect(encode(input, encoding)).toBe(expectedOutput);
     });
 
-    it('should correctly return the raw ArrayBuffer', () => {
+    it('should correctly return the raw Uint8Array', () => {
         const input = new Uint8Array([104, 101, 108, 108, 111]);
         const encoding = 'raw';
         const expectedOutput = input;

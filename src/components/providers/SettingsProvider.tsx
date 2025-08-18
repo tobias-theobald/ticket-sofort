@@ -1,10 +1,10 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
-import { getAppSettings, resetAppSettings, saveAppSettings } from '../../services/storage';
-import { loginWorkflow, logoutWorkflow, refreshTicketsWorkflow } from '../../services/workflows';
-import type { AppSettings, LoginCredentials } from '../../types';
-import { FullPageSpinner } from '../FullPageSpinner';
+import { getAppSettings, resetAppSettings, saveAppSettings } from '@/services/storage';
+import { loginWorkflow, logoutWorkflow, refreshTicketsWorkflow } from '@/services/workflows';
+import type { AppSettings, LoginCredentials } from '@/types';
+import { FullPageSpinner } from '@/components/FullPageSpinner';
 
 export type SettingsContext = {
     appSettings: AppSettings;

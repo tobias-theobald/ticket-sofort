@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Image, type LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { b64ImageToImageSource } from '../util';
+import { b64ImageToImageSource } from '@/util';
 
 export type GyroscopeImageProps = {
     image: string;

@@ -56,7 +56,7 @@ export const TicketTemplateDecoded = z.object({
                 top: TicketHeaderElement,
             }),
         }),
-        images: z.record(z.string()),
+        images: z.record(z.string(), z.string()),
         pages: z.string().array(),
         styles: z.object({
             global: z.string(),
@@ -83,7 +83,7 @@ export const AppSettings = z.object({
     username: z.string().default(''),
     deviceIdentifier: z.string().default(() => encode(getRandomBytes(20), 'hex')),
     accessToken: z.string().nullable().default(null),
-    availableTickets: z.record(FullTicketDecoded).default({}),
+    availableTickets: z.record(z.string(), FullTicketDecoded).default({}),
     lastTicketSync: z.string().nullable().default(null),
     selectedTicketId: z.string().nullable().default(null),
     ticketFetchLocale: z

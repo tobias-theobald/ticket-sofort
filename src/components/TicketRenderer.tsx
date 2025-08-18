@@ -2,8 +2,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import type { FullTicketDecoded } from '../types';
-import { b64ImageToImageSource } from '../util';
+import type { FullTicketDecoded } from '@/types';
+import { b64ImageToImageSource } from '@/util';
 import { TicketHeader } from './TicketHeader';
 
 const INJECTED_CSP_META = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; sandbox; frame-ancestors 'none';">`;

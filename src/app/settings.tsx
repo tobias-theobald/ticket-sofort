@@ -3,11 +3,11 @@ import { Fragment, useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { Button, Card, Divider, HelperText, IconButton, List, Text, TextInput } from 'react-native-paper';
 
-import { Page } from '../components/Page';
-import { useSettings } from '../components/providers/SettingsProvider';
-import styles from '../constants/styles';
-import { useI18nContext } from '../i18n/i18n-react';
-import { type AppSettings, remoteDisplayName } from '../types';
+import { Page } from '@/components/Page';
+import { useSettings } from '@/components/providers/SettingsProvider';
+import styles from '@/constants/styles';
+import { useI18nContext } from '@/i18n/i18n-react';
+import { type AppSettings, remoteDisplayName } from '@/types';
 
 const CONFIGURABLE_KEYS = ['username', 'deviceIdentifier', 'selectedTicketId'] as const;
 type ConfigurableAppSettings = Pick<AppSettings, (typeof CONFIGURABLE_KEYS)[number]>;

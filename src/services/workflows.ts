@@ -1,5 +1,5 @@
-import type { AppSettings, FullTicketDecoded, LoginCredentials } from '../types';
-import { getEffectiveLocale, getGlobalLL } from '../util/getAndLoadLocale';
+import type { AppSettings, FullTicketDecoded, LoginCredentials } from '@/types';
+import { getEffectiveLocale, getGlobalLL } from '@/util/getAndLoadLocale';
 import { fullTicketsRequest, loginRequest, ticketIdsRequest } from './requests';
 import { getAppSettings, saveAppSettings } from './storage';
 

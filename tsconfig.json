@@ -19,12 +19,9 @@
     ],
     "strictNullChecks": true,
     "strict": true,
-    "moduleResolution": "node",
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "allowJs": false,
-    "target": "ES2022",
-    "module": "ES2022",
     "resolveJsonModule": true,
     "paths": {
       "@/*": [

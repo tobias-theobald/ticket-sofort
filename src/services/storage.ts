@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { AppSettings } from '../types';
+import { AppSettings } from '@/types';
 
 export const APP_SETTINGS_KEY = 'appSettings';
 

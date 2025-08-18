@@ -1,8 +1,8 @@
 import { Image, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-import type { TicketHeaderElement, TicketTemplateDecoded } from '../types';
-import { b64ImageToImageSource } from '../util';
+import type { TicketHeaderElement, TicketTemplateDecoded } from '@/types';
+import { b64ImageToImageSource } from '@/util';
 import { GyroscopeImage } from './GyroscopeImage';
 import { SvgClock } from './SvgClock';
 

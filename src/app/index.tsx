@@ -4,12 +4,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { AppState } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 
-import { CenterPage, PageNoScroll } from '../components/Page';
-import { useSettings } from '../components/providers/SettingsProvider';
-import { TicketRenderer } from '../components/TicketRenderer';
-import styles from '../constants/styles';
-import { useI18nContext } from '../i18n/i18n-react';
-import { useValidTicket } from '../services/workflows';
+import { CenterPage, PageNoScroll } from '@/components/Page';
+import { useSettings } from '@/components/providers/SettingsProvider';
+import { TicketRenderer } from '@/components/TicketRenderer';
+import styles from '@/constants/styles';
+import { useI18nContext } from '@/i18n/i18n-react';
+import { useValidTicket } from '@/services/workflows';
 
 const TicketView = () => {
     const { LL } = useI18nContext();

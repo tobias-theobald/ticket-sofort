@@ -2,7 +2,7 @@
   "expo": {
     "name": "TicketSofort",
     "slug": "ticketsofort",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "extra": {
       "eas": {
         "projectId": "379d81d4-874b-47f5-9674-fd1875c486f4"
@@ -26,7 +26,8 @@
       "bundleIdentifier": "dev.ticketsofort.ios",
       "supportsTablet": true,
       "infoPlist": {
-        "CFBundleAllowMixedLocalizations": true
+        "CFBundleAllowMixedLocalizations": true,
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {

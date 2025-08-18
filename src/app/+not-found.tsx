@@ -1,7 +1,7 @@
 import { Link, Stack } from 'expo-router';
 import { Button, Text } from 'react-native-paper';
 
-import { Page } from '../components/Page';
+import { Page } from '@/components/Page';
 
 export default function NotFoundScreen() {
     return (

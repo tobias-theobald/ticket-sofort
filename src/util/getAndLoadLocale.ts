@@ -2,9 +2,9 @@ import 'intl-pluralrules';
 
 import { getLocales } from 'expo-localization';
 
-import type { Locales, TranslationFunctions } from '../i18n/i18n-types';
-import { baseLocale, i18nObject, isLocale } from '../i18n/i18n-util';
-import { loadLocale } from '../i18n/i18n-util.sync';
+import type { Locales, TranslationFunctions } from '@/i18n/i18n-types';
+import { baseLocale, i18nObject, isLocale } from '@/i18n/i18n-util';
+import { loadLocale } from '@/i18n/i18n-util.sync';
 
 let globalLL: TranslationFunctions | null = null;
 

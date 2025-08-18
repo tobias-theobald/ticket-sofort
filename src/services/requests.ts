@@ -6,9 +6,9 @@ import {
     type LoginCredentials,
     TicketMetaDecoded,
     TicketTemplateDecoded,
-} from '../types';
-import { getGlobalLL } from '../util/getAndLoadLocale';
-import { hmacSha512FromUtf8InputAsHex } from '../util/hashAlgorithms';
+} from '@/types';
+import { getGlobalLL } from '@/util/getAndLoadLocale';
+import { hmacSha512FromUtf8InputAsHex } from '@/util/hashAlgorithms';
 import { getRemoteConfig } from './remoteConfig';
 import { getAppSettings } from './storage';
 
@@ -26,7 +26,7 @@ const DEVICE_IDENTIFIER_KEY = 'Device-Identifier';
 const TICKEOS_AUTHORIZATION_TYPE = 'TICKeos';
 
 const compatibleAppVersions: Record<string, string> = {
-    'SaarVV Android/2022.03': '3.10.17',
+    'SaarVV Android/2022.03': '3.8.1',
 };
 
 const setRequestSignature = async (
@@ -153,7 +153,7 @@ export const ticketIdsRequest = async (): Promise<string[]> => {
 };
 
 export const FullTicketsResponse = z.object({
-    tickets: z.record(FullTicket),
+    tickets: z.record(z.string(), FullTicket),
 });
 export const fullTicketsRequest = async (ticketIds: string[]): Promise<Record<string, FullTicketDecoded>> => {
     console.debug('Requesting full tickets');

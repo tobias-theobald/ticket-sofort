@@ -22,7 +22,7 @@ const xorBuffers = (buffer1: Uint8Array, buffer2: Uint8Array): Uint8Array => {
     return result;
 };
 
-const arrayBufferToHexString = (buffer: ArrayBuffer): string => {
+const uint8ArrayToHexString = (buffer: Uint8Array): string => {
     const byteArray = new Uint8Array(buffer);
     return Array.from(byteArray)
         .map((byte) => byte.toString(16).padStart(2, '0'))
@@ -41,12 +41,12 @@ export type SupportedInputStringEncodings = 'hex' | 'utf-8';
 export type SupportedInputBufferEncodings = 'raw';
 export type SupportedInputEncodings = SupportedInputStringEncodings | SupportedInputBufferEncodings;
 export function parseEncoded(encoded: string, encoding: SupportedInputStringEncodings): Uint8Array;
-export function parseEncoded(encoded: ArrayBuffer, encoding: SupportedInputBufferEncodings): Uint8Array;
-export function parseEncoded(encoded: ArrayBuffer | string, encoding: SupportedInputEncodings): Uint8Array;
-export function parseEncoded(encoded: ArrayBuffer | string, encoding: SupportedInputEncodings): Uint8Array {
+export function parseEncoded(encoded: Uint8Array, encoding: SupportedInputBufferEncodings): Uint8Array;
+export function parseEncoded(encoded: Uint8Array | string, encoding: SupportedInputEncodings): Uint8Array;
+export function parseEncoded(encoded: Uint8Array | string, encoding: SupportedInputEncodings): Uint8Array {
     if (typeof encoded !== 'string') {
         // noinspection SuspiciousTypeOfGuard
-        if (!(encoded instanceof ArrayBuffer)) {
+        if (!(encoded instanceof Uint8Array)) {
             throw new Error('Invalid input');
         }
         return new Uint8Array(encoded);
@@ -62,14 +62,14 @@ export function parseEncoded(encoded: ArrayBuffer | string, encoding: SupportedI
 export type SupportedOutputStringEncodings = 'hex';
 export type SupportedOutputBufferEncodings = 'raw';
 export type SupportedOutputEncodings = SupportedOutputStringEncodings | SupportedOutputBufferEncodings;
-export function encode(encoded: ArrayBuffer, encoding: 'hex'): string;
-export function encode(encoded: ArrayBuffer, encoding: 'raw'): ArrayBuffer;
-export function encode(encoded: ArrayBuffer, encoding: SupportedOutputEncodings | 'raw'): string | ArrayBuffer;
-export function encode(encoded: ArrayBuffer, encoding: SupportedOutputEncodings | 'raw'): string | ArrayBuffer {
+export function encode(encoded: Uint8Array, encoding: 'hex'): string;
+export function encode(encoded: Uint8Array, encoding: 'raw'): Uint8Array;
+export function encode(encoded: Uint8Array, encoding: SupportedOutputEncodings | 'raw'): string | Uint8Array;
+export function encode(encoded: Uint8Array, encoding: SupportedOutputEncodings | 'raw'): string | Uint8Array {
     if (encoding === 'raw') {
         return encoded;
     } else if (encoding === 'hex') {
-        return arrayBufferToHexString(encoded);
+        return uint8ArrayToHexString(encoded);
     } else {
         throw new Error('Invalid encoding');
     }
@@ -81,7 +81,7 @@ export function sha512(
     outputEncoding: SupportedOutputStringEncodings,
 ): Promise<string>;
 export function sha512(
-    input: ArrayBuffer,
+    input: Uint8Array,
     inputEncoding: SupportedInputBufferEncodings,
     outputEncoding: SupportedOutputStringEncodings,
 ): Promise<string>;
@@ -89,21 +89,20 @@ export function sha512(
     input: string,
     inputEncoding: SupportedInputStringEncodings,
     outputEncoding: SupportedOutputBufferEncodings,
-): Promise<ArrayBuffer>;
+): Promise<Uint8Array>;
 export function sha512(
-    input: ArrayBuffer,
+    input: Uint8Array,
     inputEncoding: SupportedInputBufferEncodings,
     outputEncoding: SupportedOutputBufferEncodings,
-): Promise<ArrayBuffer>;
+): Promise<Uint8Array>;
 export async function sha512(
-    input: string | ArrayBuffer,
+    input: string | Uint8Array,
     inputEncoding: SupportedInputEncodings,
     outputEncoding: SupportedOutputEncodings,
-): Promise<string | ArrayBuffer> {
-    return encode(
-        await Crypto.digest(Crypto.CryptoDigestAlgorithm.SHA512, parseEncoded(input, inputEncoding)),
-        outputEncoding,
-    );
+): Promise<string | Uint8Array> {
+    const inputUint8Array = parseEncoded(input, inputEncoding);
+    const hash = await Crypto.digest(Crypto.CryptoDigestAlgorithm.SHA512, inputUint8Array);
+    return encode(new Uint8Array(hash), outputEncoding);
 }
 
 // This is not recommended for cryptographic use, as it is not secure.
@@ -115,7 +114,7 @@ export function sha1(
     outputEncoding: SupportedOutputStringEncodings,
 ): Promise<string>;
 export function sha1(
-    input: ArrayBuffer,
+    input: Uint8Array,
     inputEncoding: SupportedInputBufferEncodings,
     outputEncoding: SupportedOutputStringEncodings,
 ): Promise<string>;
@@ -123,20 +122,20 @@ export function sha1(
     input: string,
     inputEncoding: SupportedInputStringEncodings,
     outputEncoding: SupportedOutputBufferEncodings,
-): Promise<ArrayBuffer>;
+): Promise<Uint8Array>;
 export function sha1(
-    input: ArrayBuffer,
+    input: Uint8Array,
     inputEncoding: SupportedInputBufferEncodings,
     outputEncoding: SupportedOutputBufferEncodings,
-): Promise<ArrayBuffer>;
+): Promise<Uint8Array>;
 export async function sha1(
-    input: string | ArrayBuffer,
+    input: string | Uint8Array,
     inputEncoding: SupportedInputEncodings,
     outputEncoding: SupportedOutputEncodings,
-): Promise<string | ArrayBuffer> {
-    const inputArrayBuffer = parseEncoded(input, inputEncoding);
-    const hash = await Crypto.digest(Crypto.CryptoDigestAlgorithm.SHA1, inputArrayBuffer);
-    return encode(hash, outputEncoding);
+): Promise<string | Uint8Array> {
+    const inputUint8Array = parseEncoded(input, inputEncoding);
+    const hash = await Crypto.digest(Crypto.CryptoDigestAlgorithm.SHA1, inputUint8Array);
+    return encode(new Uint8Array(hash), outputEncoding);
 }
 
 export function hmac(
@@ -149,7 +148,7 @@ export function hmac(
 ): Promise<string>;
 export function hmac(
     algo: keyof typeof BLOCK_SIZES,
-    input: ArrayBuffer,
+    input: Uint8Array,
     inputEncoding: SupportedInputBufferEncodings,
     key: string,
     keyEncoding: SupportedInputStringEncodings,
@@ -159,15 +158,15 @@ export function hmac(
     algo: keyof typeof BLOCK_SIZES,
     input: string,
     inputEncoding: SupportedInputStringEncodings,
-    key: ArrayBuffer,
+    key: Uint8Array,
     keyEncoding: SupportedInputBufferEncodings,
     outputEncoding: SupportedOutputStringEncodings,
 ): Promise<string>;
 export function hmac(
     algo: keyof typeof BLOCK_SIZES,
-    input: ArrayBuffer,
+    input: Uint8Array,
     inputEncoding: SupportedInputBufferEncodings,
-    key: ArrayBuffer,
+    key: Uint8Array,
     keyEncoding: SupportedInputBufferEncodings,
     outputEncoding: SupportedOutputStringEncodings,
 ): Promise<string>;
@@ -178,47 +177,47 @@ export function hmac(
     key: string,
     keyEncoding: SupportedInputStringEncodings,
     outputEncoding: SupportedOutputBufferEncodings,
-): Promise<ArrayBuffer>;
+): Promise<Uint8Array>;
 export function hmac(
     algo: keyof typeof BLOCK_SIZES,
-    input: ArrayBuffer,
+    input: Uint8Array,
     inputEncoding: SupportedInputBufferEncodings,
     key: string,
     keyEncoding: SupportedInputStringEncodings,
     outputEncoding: SupportedOutputBufferEncodings,
-): Promise<ArrayBuffer>;
+): Promise<Uint8Array>;
 export function hmac(
     algo: keyof typeof BLOCK_SIZES,
     input: string,
     inputEncoding: SupportedInputStringEncodings,
-    key: ArrayBuffer,
+    key: Uint8Array,
     keyEncoding: SupportedInputBufferEncodings,
     outputEncoding: SupportedOutputBufferEncodings,
-): Promise<ArrayBuffer>;
+): Promise<Uint8Array>;
 export function hmac(
     algo: keyof typeof BLOCK_SIZES,
-    input: ArrayBuffer,
+    input: Uint8Array,
     inputEncoding: SupportedInputBufferEncodings,
-    key: ArrayBuffer,
+    key: Uint8Array,
     keyEncoding: SupportedInputBufferEncodings,
     outputEncoding: SupportedOutputBufferEncodings,
-): Promise<ArrayBuffer>;
+): Promise<Uint8Array>;
 export function hmac(
     algo: keyof typeof BLOCK_SIZES,
-    input: string | ArrayBuffer,
+    input: string | Uint8Array,
     inputEncoding: SupportedInputEncodings,
-    key: string | ArrayBuffer,
+    key: string | Uint8Array,
     keyEncoding: SupportedInputEncodings,
     outputEncoding: SupportedOutputEncodings,
-): Promise<string | ArrayBuffer>;
+): Promise<string | Uint8Array>;
 export async function hmac(
     algo: keyof typeof BLOCK_SIZES,
-    input: string | ArrayBuffer,
+    input: string | Uint8Array,
     inputEncoding: SupportedInputEncodings,
-    key: string | ArrayBuffer,
+    key: string | Uint8Array,
     keyEncoding: SupportedInputEncodings,
     outputEncoding: SupportedOutputEncodings,
-): Promise<string | ArrayBuffer> {
+): Promise<string | Uint8Array> {
     const blockSize = BLOCK_SIZES[algo];
     if (!blockSize) {
         throw new Error('Unsupported algorithm');
