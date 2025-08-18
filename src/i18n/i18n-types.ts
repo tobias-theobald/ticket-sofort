@@ -116,6 +116,26 @@ type RootTranslation = {
 	 */
 	settingsScreenTicketsRefresh: string
 	/**
+	 * D​i​s​p​l​a​y
+	 */
+	settingsScreenDisplayTitle: string
+	/**
+	 * S​c​r​e​e​n​ ​O​r​i​e​n​t​a​t​i​o​n
+	 */
+	settingsScreenOrientationLabel: string
+	/**
+	 * A​l​l​o​w​ ​r​o​t​a​t​i​o​n
+	 */
+	settingsScreenOrientationAuto: string
+	/**
+	 * P​o​r​t​r​a​i​t​ ​o​n​l​y
+	 */
+	settingsScreenOrientationPortrait: string
+	/**
+	 * S​m​a​r​t​ ​(​a​u​t​o​ ​f​o​r​ ​i​P​a​d​s​)
+	 */
+	settingsScreenOrientationSmart: string
+	/**
 	 * E​x​p​e​r​t​ ​S​e​t​t​i​n​g​s
 	 */
 	settingsScreenExpertTitle: string
@@ -262,6 +282,26 @@ export type TranslationFunctions = {
 	 * Refresh tickets
 	 */
 	settingsScreenTicketsRefresh: () => LocalizedString
+	/**
+	 * Display
+	 */
+	settingsScreenDisplayTitle: () => LocalizedString
+	/**
+	 * Screen Orientation
+	 */
+	settingsScreenOrientationLabel: () => LocalizedString
+	/**
+	 * Allow rotation
+	 */
+	settingsScreenOrientationAuto: () => LocalizedString
+	/**
+	 * Portrait only
+	 */
+	settingsScreenOrientationPortrait: () => LocalizedString
+	/**
+	 * Smart (auto for iPads)
+	 */
+	settingsScreenOrientationSmart: () => LocalizedString
 	/**
 	 * Expert Settings
 	 */

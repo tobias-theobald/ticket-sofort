@@ -78,6 +78,9 @@ export const remoteDisplayName: Record<Remote, string> = {
     [Remote.enum.saarvv]: 'SaarVV',
 };
 
+export const OrientationMode = z.enum(['auto', 'portrait', 'smart']);
+export type OrientationMode = z.infer<typeof OrientationMode>;
+
 export const AppSettings = z.object({
     remote: Remote.default(Remote.enum.saarvv),
     username: z.string().default(''),
@@ -90,6 +93,7 @@ export const AppSettings = z.object({
         .enum(locales as [Locales, ...Locales[]])
         .nullable()
         .default(null),
+    orientationMode: OrientationMode.default('smart'),
 });
 export type AppSettings = z.infer<typeof AppSettings>;
 

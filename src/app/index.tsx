@@ -1,7 +1,8 @@
 import * as Brightness from 'expo-brightness';
 import { Link, useNavigation } from 'expo-router';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { useCallback, useEffect, useState } from 'react';
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 
 import { CenterPage, PageNoScroll } from '@/components/Page';
@@ -19,6 +20,33 @@ const TicketView = () => {
 
     const [prevBrightness, setPrevBrightness] = useState<number | null>(null);
     const [permissionResponse, requestPermission] = Brightness.usePermissions();
+
+    // Handle orientation based on settings
+    useEffect(() => {
+        const orientationMode = appSettings.orientationMode ?? 'smart';
+        
+        (async () => {
+            if (orientationMode === 'portrait') {
+                await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+            } else if (orientationMode === 'auto') {
+                await ScreenOrientation.unlockAsync();
+            } else if (orientationMode === 'smart') {
+                // Platform-specific behavior
+                if (Platform.OS === 'ios' && Platform.isPad) {
+                    await ScreenOrientation.unlockAsync();
+                } else {
+                    // iPhone or any Android device
+                    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+                }
+            }
+        })().catch(console.error);
+        
+        // Cleanup: unlock when leaving the screen
+        return () => {
+            ScreenOrientation.unlockAsync().catch(console.error);
+        };
+    }, [appSettings.orientationMode]);
+
     const toggleBrightness = useCallback(() => {
         if (!permissionResponse) {
             // too early

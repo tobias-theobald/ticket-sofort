@@ -7,9 +7,9 @@ import { Page } from '@/components/Page';
 import { useSettings } from '@/components/providers/SettingsProvider';
 import styles from '@/constants/styles';
 import { useI18nContext } from '@/i18n/i18n-react';
-import { type AppSettings, remoteDisplayName } from '@/types';
+import { type AppSettings, type OrientationMode, remoteDisplayName } from '@/types';
 
-const CONFIGURABLE_KEYS = ['username', 'deviceIdentifier', 'selectedTicketId'] as const;
+const CONFIGURABLE_KEYS = ['username', 'deviceIdentifier', 'selectedTicketId', 'orientationMode'] as const;
 type ConfigurableAppSettings = Pick<AppSettings, (typeof CONFIGURABLE_KEYS)[number]>;
 const singleCharRegex = /./g;
 
@@ -72,6 +72,16 @@ const Settings = () => {
         (newValue: string | null) => {
             console.info(`selectedTicketId changed to ${newValue}`);
             const newAppSettings = { ...appSettings, selectedTicketId: newValue };
+            setAppSettings(newAppSettings);
+            saveAppSettings({ ...initialAppSettings, ...newAppSettings });
+        },
+        [appSettings, initialAppSettings, saveAppSettings],
+    );
+
+    const handleOrientationModeChanged = useCallback(
+        (newValue: OrientationMode) => {
+            console.info(`orientationMode changed to ${newValue}`);
+            const newAppSettings = { ...appSettings, orientationMode: newValue };
             setAppSettings(newAppSettings);
             saveAppSettings({ ...initialAppSettings, ...newAppSettings });
         },
@@ -240,6 +250,39 @@ const Settings = () => {
                         </Button>
                     )}
                 </Card.Actions>
+            </Card>
+            <Card style={styles.mediumMarginBottom}>
+                <Card.Title title={LL.settingsScreenDisplayTitle()} />
+                <Card.Content>
+                    <Text>{LL.settingsScreenOrientationLabel()}</Text>
+                    <List.Item
+                        title={LL.settingsScreenOrientationSmart()}
+                        right={
+                            (appSettings.orientationMode ?? 'smart') === 'smart'
+                                ? (props) => <List.Icon {...props} icon="radiobox-marked" />
+                                : (props) => <List.Icon {...props} icon="radiobox-blank" />
+                        }
+                        onPress={() => handleOrientationModeChanged('smart')}
+                    />
+                    <List.Item
+                        title={LL.settingsScreenOrientationPortrait()}
+                        right={
+                            appSettings.orientationMode === 'portrait'
+                                ? (props) => <List.Icon {...props} icon="radiobox-marked" />
+                                : (props) => <List.Icon {...props} icon="radiobox-blank" />
+                        }
+                        onPress={() => handleOrientationModeChanged('portrait')}
+                    />
+                    <List.Item
+                        title={LL.settingsScreenOrientationAuto()}
+                        right={
+                            appSettings.orientationMode === 'auto'
+                                ? (props) => <List.Icon {...props} icon="radiobox-marked" />
+                                : (props) => <List.Icon {...props} icon="radiobox-blank" />
+                        }
+                        onPress={() => handleOrientationModeChanged('auto')}
+                    />
+                </Card.Content>
             </Card>
             <Card>
                 <Card.Title title={LL.settingsScreenExpertTitle()} />
